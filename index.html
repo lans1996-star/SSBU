@@ -1,0 +1,823 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2775.1">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="es"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;SSBU Pro Analytics&lt;/title&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="manifest" id="manifest-link"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="theme-color" content="#060913"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&amp;family=Outfit:wght@600;700;900&amp;display=swap');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>:root {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--bg-base: #060913;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>--bg-gradient: radial-gradient(circle at 50% 0%, #172340 0%, #060913 60%);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--bg-panel: rgba(15, 23, 42, 0.6);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--bg-glass: rgba(15, 23, 42, 0.75);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--border-glow: rgba(56, 189, 248, 0.3);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>--border-dim: rgba(255, 255, 255, 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--accent-main: #38bdf8;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>--accent-alt: #818cf8;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--text-title: #ffffff;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>--text-body: #94a3b8;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>--tier-s: #ff3b3b; --tier-a: #ff9933; --tier-b: #ffcc33;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>--tier-c: #33cc66; --tier-d: #3399ff; --tier-e: #9933cc;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>--win: #10b981; --loss: #f43f5e; --even: #f59e0b;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>body {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: var(--bg-gradient);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-attachment: fixed;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Inter', sans-serif;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--text-body);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.6;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>min-height: 100vh;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body.modal-open { overflow: hidden; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem; display: flex; flex-direction: column; gap: 2rem; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Encabezado */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-header { text-align: center; margin-top: 1rem; position: relative;}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-header h1 { font-family: 'Outfit', sans-serif; font-size: 2.6rem; font-weight: 900; text-transform: uppercase; background: linear-gradient(135deg, #ffffff, var(--accent-alt), #f43f5e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; letter-spacing: -0.5px;}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-header p { font-size: 0.95rem; max-width: 500px; margin: 0 auto; opacity: 0.8; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Botones de Respaldo */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.backup-controls { position: absolute; top: 0; right: 0; display: flex; gap: 0.5rem; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-backup { background: rgba(255,255,255,0.05); border: 1px solid var(--border-dim); color: var(--text-body); padding: 0.4rem; border-radius: 8px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-backup:hover { background: var(--accent-main); color: #fff; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Paneles Estilo App Nativa */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-panel {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: var(--bg-glass);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid var(--border-dim);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 20px;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 1.8rem;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 24px 40px -12px rgba(0,0,0,0.6);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: relative;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-panel-title { font-family: 'Outfit', sans-serif; font-size: 1.4rem; color: var(--text-title); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; letter-spacing: 0.5px;}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Simulador VS */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-vs-arena { display: flex; flex-direction: column; gap: 1.2rem; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-selectors { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>@media (max-width: 600px) { .ssbu-selectors { grid-template-columns: 1fr; } .ssbu-vs-badge { display: none; } .backup-controls {position: relative; justify-content: center; margin-bottom: 1rem;}}</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-select {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%; padding: 1.1rem;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(0,0,0,0.4); border: 1px solid var(--border-dim); border-radius: 14px;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--text-title); font-size: 1rem; outline: none; cursor: pointer; transition: all 0.3s ease;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>backdrop-filter: blur(10px);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-select:focus { border-color: var(--accent-main); box-shadow: 0 0 15px var(--border-glow); }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-vs-badge { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 900; color: rgba(255,255,255,0.3); }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-verdict-box { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 1.5rem; border-left: 5px solid var(--border-dim); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-verdict-header { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.6rem; font-family: 'Outfit', sans-serif; letter-spacing: 0.5px;}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-verdict-text { font-size: 0.95rem; color: #cbd5e1; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-gameplan-box { margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--border-dim); display: flex; flex-direction: column; gap: 1rem; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-gameplan-title { color: var(--accent-main); font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Stage Striker */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stage-striker { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stage-btn { background: var(--bg-panel); border: 1px solid var(--border-dim); color: var(--text-title); padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; user-select: none; position: relative; overflow: hidden;}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stage-btn.banned { opacity: 0.5; color: var(--text-body); border-color: var(--loss); background: rgba(244, 63, 94, 0.1);}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stage-btn.banned::after { content: ''; position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--loss); transform: rotate(-5deg); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Sticky Search Bar &amp; Controls */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-sticky-header {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: sticky; top: 1rem; z-index: 40;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(15, 23, 42, 0.85);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid var(--border-dim); border-radius: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 1.2rem; margin-bottom: 1.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 10px 30px rgba(0,0,0,0.5);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.search-sort-row { display: grid; grid-template-columns: 1fr auto; gap: 0.8rem; margin-bottom: 1rem; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>@media (max-width: 600px) { .search-sort-row { grid-template-columns: 1fr; } }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-search-wrapper { position: relative; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-search-input {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%; padding: 1.1rem 1rem 1.1rem 3.2rem;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(0,0,0,0.4); border: 1px solid var(--border-dim); border-radius: 14px;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--text-title); font-size: 1.05rem; transition: all 0.3s ease;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-search-input:focus { outline: none; border-color: var(--accent-main); box-shadow: 0 0 20px var(--border-glow); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-search-icon { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); fill: var(--text-body); width: 20px; height: 20px; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-sort-select {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(0,0,0,0.4); border: 1px solid var(--border-dim); border-radius: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--text-title); padding: 0 1.2rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; outline: none;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-sort-select:focus { border-color: var(--accent-main); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-mains-filter { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-main-btn {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(255,255,255,0.05); border: 1px solid transparent;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: var(--text-body); padding: 0.5rem 0.9rem; border-radius: 10px;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex; align-items: center; gap: 0.4rem;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-main-btn:hover, .ssbu-main-btn.active { background: var(--accent-main); color: #fff; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Roster Grid */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.2rem; max-height: 60vh; overflow-y: auto; padding-right: 0.4rem;}</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>@keyframes fadeUp {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>from { opacity: 0; transform: translateY(15px); }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>to { opacity: 1; transform: translateY(0); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-card {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: var(--bg-panel); border: 1px solid var(--border-dim); border-radius: 16px;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 1.2rem; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex; align-items: center; gap: 1.2rem; position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-card:hover { border-color: var(--accent-main); transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.4); background: rgba(30, 41, 59, 0.8); }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-avatar {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.4rem; color: #fff;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-shadow: 0px 2px 4px rgba(0,0,0,0.5); box-shadow: inset 0 0 15px rgba(0,0,0,0.3);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-card-info { flex: 1; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-card-name { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--text-title); font-size: 1.1rem; letter-spacing: 0.3px;}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-card-arch { font-size: 0.75rem; text-transform: uppercase; font-weight: 800; margin-top: 4px; letter-spacing: 0.5px;}</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-card-star { position: absolute; right: 12px; top: 12px; color: #facc15; font-size: 1.2rem; display: none; filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.5));}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-card.is-main .ssbu-card-star { display: block; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Modal */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-modal {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: fixed; top: 0; left: 0; right: 0; bottom: 0;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(6, 9, 19, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex; justify-content: center; align-items: center;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 100; padding: 1rem;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-modal.active { opacity: 1; pointer-events: auto; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-modal-content {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: #0f172a; border: 1px solid var(--border-dim); border-radius: 24px;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%; max-width: 900px; max-height: 90vh; display: flex; flex-direction: column;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>transform: translateY(30px) scale(0.98); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.8);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-modal.active .ssbu-modal-content { transform: translateY(0) scale(1); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-modal-header {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 1.5rem 1.8rem; border-bottom: 1px solid var(--border-dim);<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex; justify-content: space-between; align-items: center;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: rgba(15, 23, 42, 0.95); z-index: 10;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-modal-header-left { display: flex; align-items: center; gap: 1.2rem; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-modal-name { font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: var(--text-title); letter-spacing: -0.5px;}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-modal-tier { padding: 0.3rem 0.8rem; border-radius: 8px; font-weight: 800; font-size: 0.8rem; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-toggle-main { background: rgba(255,255,255,0.05); border: 1px solid var(--border-dim); color: var(--text-title); padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-toggle-main:hover { border-color: #facc15; background: rgba(250, 204, 21, 0.1); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-toggle-main.is-main { background: rgba(250, 204, 21, 0.15); border-color: #facc15; color: #facc15; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-close { background: rgba(255,255,255,0.1); border: none; color: var(--text-title); width: 36px; height: 36px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display:flex; justify-content:center; align-items:center; transition: all 0.2s;}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-close:hover { background: var(--red); transform: rotate(90deg); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* Pestañas estilo iOS */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-tabs-container { padding: 1rem 1.8rem 0; background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid var(--border-dim); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-tabs { display: flex; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 4px; position: relative;}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-tab-btn { flex: 1; padding: 0.8rem 0; background: transparent; border: none; border-radius: 10px; color: var(--text-body); font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; position: relative; z-index: 2;}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-tab-btn.active { color: var(--text-title); font-weight: 700; background: rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.2);}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-tab-content { display: none; padding: 1.8rem; overflow-y: auto; flex-direction: column; gap: 1.5rem; background: var(--bg-base); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-tab-content.active { display: flex; animation: fadeUp 0.3s ease; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-data-block { background: rgba(15, 23, 42, 0.5); border-radius: 16px; padding: 1.2rem; border: 1px solid var(--border-dim); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-data-title { font-size: 0.85rem; text-transform: uppercase; font-weight: 800; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; letter-spacing: 0.5px;}</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.t-green { color: var(--green); } .t-red { color: var(--red); } .t-blue { color: var(--accent-main); }<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.t-purple { color: var(--accent-alt); } .t-yellow { color: var(--yellow); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-tag { padding: 0.3rem 0.8rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; background: rgba(0,0,0,0.3); border: 1px solid var(--border-dim); color: #fff;}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-stat-line { font-size: 0.9rem; margin-bottom: 0.8rem; line-height: 1.5; color: #cbd5e1;}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-stat-line strong { color: var(--text-title); display: block; font-size: 0.95rem; margin-bottom: 0.2rem;}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-notes-area { width: 100%; min-height: 120px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-dim); border-radius: 12px; padding: 1rem; color: var(--text-title); font-family: 'Inter', sans-serif; font-size: 0.95rem; resize: vertical; outline: none; transition: all 0.3s; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.ssbu-notes-area:focus { border-color: var(--accent-main); box-shadow: 0 0 15px var(--border-glow); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>::-webkit-scrollbar { width: 6px; }<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>::-webkit-scrollbar-track { background: transparent; }<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>::-webkit-scrollbar-thumb { background: var(--border-dim); border-radius: 3px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>::-webkit-scrollbar-thumb:hover { background: var(--accent-main); }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="ssbu-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;header class="ssbu-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="backup-controls"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="btn-backup" onclick="exportData()" title="Respaldar Datos"&gt;📥&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="btn-backup" onclick="document.getElementById('importFile').click()" title="Cargar Datos"&gt;📤&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1&gt;SSBU Pro Analytics&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p&gt;Herramienta Táctica Offline. Matchups, Frame Data y Notas.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/header&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Simulador VS --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;section class="ssbu-panel"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2 class="ssbu-panel-title"&gt;⚔️ Coach Analítico &amp; Counterpicks&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="ssbu-vs-arena"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="ssbu-selectors"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;select id="fighterA" class="ssbu-select" onchange="analyzeMatchup()"&gt;&lt;option value=""&gt;Tú...&lt;/option&gt;&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="ssbu-vs-badge"&gt;VS&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;select id="fighterB" class="ssbu-select" onchange="analyzeMatchup()"&gt;&lt;option value=""&gt;Oponente...&lt;/option&gt;&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div id="verdictBox" class="ssbu-verdict-box" style="border-left-color: var(--border-dim);"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="verdictHeader" class="ssbu-verdict-header" style="color: var(--text-body);"&gt;Selecciona el Matchup&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="verdictText" class="ssbu-verdict-text"&gt;Genera un gameplan competitivo y recomendaciones de Stage Striking.&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Header Pegajoso (Sticky) con Búsqueda, Ordenamiento y Mains --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="ssbu-sticky-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="search-sort-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="ssbu-search-wrapper"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;svg class="ssbu-search-icon" viewBox="0 0 24 24"&gt;&lt;circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" fill="none"/&gt;&lt;line x1="16.5" y1="16.5" x2="22" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/&gt;&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;input type="text" id="searchInput" class="ssbu-search-input" placeholder="Buscar personaje por nombre..." oninput="renderGrid()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;select id="sortSelect" class="ssbu-sort-select" onchange="renderGrid()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="alpha"&gt;🔤 Orden A-Z&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="tier"&gt;🏆 Por Tier Oficial&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="ssbu-mains-filter" id="mainsContainer"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Grid de Personajes --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="rosterGrid" class="ssbu-grid"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Modal Ficha Técnica Completa --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="fighterModal" class="ssbu-modal" onclick="closeOverlay(event)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="ssbu-modal-content" onclick="event.stopPropagation()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="ssbu-modal-header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="ssbu-modal-header-left"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="modAvatar" class="ssbu-avatar" style="width: 56px; height: 56px; font-size:1.4rem;"&gt;M&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div style="display: flex; align-items: center; gap: 1rem;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;h2 id="modName" class="ssbu-modal-name"&gt;Name&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button id="btnToggleMain" class="btn-toggle-main" onclick="toggleMainStatus()"&gt;⭐ Añadir a Mains&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div style="display: flex; gap: 0.5rem; margin-top: 0.2rem;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span id="modTier" class="ssbu-modal-tier"&gt;Tier&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button type="button" class="ssbu-close" onclick="closeFighterCard()"&gt;&amp;times;&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="ssbu-tabs-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="ssbu-tabs"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="ssbu-tab-btn active" onclick="switchTab('tabMatchups')"&gt;Matchups &amp; Notas&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="ssbu-tab-btn" onclick="switchTab('tabData')"&gt;Data &amp; Tech&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button class="ssbu-tab-btn" onclick="switchTab('tabNeutral')"&gt;Neutral &amp; Stats&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="tabMatchups" class="ssbu-tab-content active"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.2rem;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="ssbu-data-block"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="ssbu-data-title t-green"&gt;🟢 Ventaja contra&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div id="modBest" class="ssbu-tags"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="ssbu-data-block"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="ssbu-data-title t-red"&gt;🔴 Sufre contra&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div id="modWorst" class="ssbu-tags"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="ssbu-data-block" style="border-color: rgba(16, 185, 129, 0.3);"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="ssbu-data-title t-green"&gt;📝 Bloc de Notas de Torneo (Local)&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;textarea id="charNotes" class="ssbu-notes-area" placeholder="Anota aquí los hábitos de tu rival o estrategias de escenario..."&gt;&lt;/textarea&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div style="text-align: right; font-size: 0.75rem; color: var(--green); margin-top: 0.4rem; opacity: 0;" id="saveIndicator"&gt;✓ Guardado&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="tabData" class="ssbu-tab-content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="ssbu-data-block"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="ssbu-data-title t-purple"&gt;🛡️ Opciones OoS &amp; Seguridad&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="modOos" class="ssbu-stat-line"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="modSafe" class="ssbu-stat-line" style="color: var(--accent-main);"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="ssbu-data-block"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="ssbu-data-title t-yellow"&gt;🎮 Execution &amp; B&amp;B&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="modBnb" class="ssbu-stat-line"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="modTech" class="ssbu-stat-line" style="color: var(--yellow);"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="tabNeutral" class="ssbu-tab-content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="ssbu-data-block" style="border-color: rgba(129, 140, 248, 0.3);"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="ssbu-data-title t-blue"&gt;🧠 Plan de Neutral y Gimmicks&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="modNeutral" class="ssbu-stat-line"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="modGimmick" class="ssbu-stat-line" style="margin-top:0.8rem;"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.2rem;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="ssbu-data-block"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="ssbu-data-title t-red"&gt;📊 Peso y Supervivencia&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div id="modWeight" class="ssbu-stat-line"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="ssbu-data-block"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="ssbu-data-title t-green"&gt;🔥 Kill Confirms&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div id="modKc" class="ssbu-stat-line"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// PWA Setup Básico Inyectado</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const manifestData = {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"name": "SSBU Pro Analytics", "short_name": "SSBU Pro", "start_url": ".", "display": "standalone",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"background_color": "#060913", "theme_color": "#0f172a",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"icons": [{ "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230f172a'/%3E%3Ccircle cx='50' cy='50' r='30' fill='none' stroke='%2338bdf8' stroke-width='8'/%3E%3Cpath d='M46 20v60M20 46h60' stroke='%2338bdf8' stroke-width='8'/%3E%3C/svg%3E", "sizes": "512x512", "type": "image/svg+xml" }]</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('manifest-link').href = URL.createObjectURL(manifestBlob);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>if ('serviceWorker' in navigator) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>window.addEventListener('load', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const swCode = `self.addEventListener('install', (e) =&gt; { self.skipWaiting(); }); self.addEventListener('activate', (e) =&gt; { e.waitUntil(clients.claim()); }); self.addEventListener('fetch', (e) =&gt; { });`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const blob = new Blob([swCode], {type: 'application/javascript'});</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const swUrl = URL.createObjectURL(blob);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>navigator.serviceWorker.register(swUrl).catch(err =&gt; console.log('SW skipped'));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Sistema de Respaldo Exportar/Importar</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function exportData() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const dataToExport = { mains: JSON.parse(localStorage.getItem('ssbu_mains')) || [], notes: {} };</p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (let i = 0; i &lt; localStorage.length; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const key = localStorage.key(i);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (key.startsWith('ssbu_notes_')) dataToExport.notes[key] = localStorage.getItem(key);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToExport));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const downloadAnchorNode = document.createElement('a');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>downloadAnchorNode.setAttribute("href", dataStr);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>downloadAnchorNode.setAttribute("download", "SSBU_Pro_Backup.json");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.body.appendChild(downloadAnchorNode);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>downloadAnchorNode.click();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>downloadAnchorNode.remove();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function importData(event) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const file = event.target.files[0];</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (!file) return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const reader = new FileReader();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>reader.onload = function(e) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const data = JSON.parse(e.target.result);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if(data.mains) localStorage.setItem('ssbu_mains', JSON.stringify(data.mains));</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if(data.notes) {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>for (const key in data.notes) localStorage.setItem(key, data.notes[key]);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>myMains = data.mains || [];</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>renderMainsFilter();</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>renderGrid();</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>alert("🔄 Datos importados correctamente.");</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} catch (err) { alert("❌ Archivo no válido."); }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p1"><span class="Apple-converted-space">            </span>reader.readAsText(file);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Datos y Helpers</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function getWeight(name) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const w = {"Pikachu": "79 (Ligero) - Muere al ~85%", "Cloud": "100 (Medio) - Supervivencia estándar, muere al ~110%", "Joker": "93 (Medio-Ligero) - Muere al ~100%", "Mr. Game &amp; Watch": "75 (Muy Ligero) - Flotante, muere al ~75%", "Palutena": "91 (Medio-Ligero) - Muere al ~100%", "Pyra / Mythra": "Pyra 98 / Mythra 92 (Medio)", "Bowser": "135 (Super Pesado)", "Donkey Kong": "127 (Pesado)", "Pichu": "62 (El más ligero)", "Fox": "77 (Ligero)"};</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return w[name] || "Peso Promedio (~95) - Muere alrededor del ~110% en centro de stage.";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function getKillConfirms(name) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const kc = {"Pikachu": "Nair -&gt; Down-Smash (~80%). Drag-Down Up-Air -&gt; Down-Smash.", "Joker": "Fair 1 -&gt; Drag-Down Up-Air -&gt; Down/Up-Smash.", "Cloud": "Limit Cross Slash (~80%). Spaced Bair (~110%).", "Mr. Game &amp; Watch": "Down-Smash (entierro) -&gt; Forward-Smash.", "Palutena": "D-Throw -&gt; Bair (~90%). Nair -&gt; Bair.", "Pyra / Mythra": "Mythra D-Tilt -&gt; Up-Smash. Pyra D-Air -&gt; Up-Smash.", "Fox": "Nair suave -&gt; Up-Smash (~80%).", "Mario": "Nair -&gt; Up-Smash (~90%)."};</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return kc[name] || "Aéreos suaves o agarres a Smash cerca del borde (aprox. ~110%).";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function getNeutralPlan(name) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const p = {"Pikachu": "Spam de T-Jolt para forzar al rival a protegerse o saltar, y castigar con Quick Attack.", "Joker": "Espaciar Bair con Slingshots. Jugar pasivo-agresivo hasta obtener Arsène.", "Cloud": "Crear un muro impenetrable de Bair y Fair bien espaciados. Cargar límite fuerza al rival a acercarse.", "Mr. Game &amp; Watch": "Bait puro. Finge errores para que el rival golpee tu escudo y castígalo con Fire! (Up-B).", "Palutena": "Usa Autoreticle a distancia. Si se acercan, abusa de tu Nair invencible frontalmente.", "Pyra / Mythra": "Gana el centro con Mythra y Slingshots. Cambia a Pyra solo para matar."};</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return p[name] || "Aprovecha la movilidad base, no regales saltos y castiga el escudo con opciones seguras.";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function getGimmicks(name) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const g = {"Wario": "Mitad Waft = 55s. Full Waft = 1:50m.", "Cloud": "Límite dura 15s.", "Joker": "Arsène dura ~30s.", "Mr. Game &amp; Watch": "Bucket requiere 3 proyectiles.", "Steve": "Diamante requiere 14 de hierro/oro.", "Terry": "GO! se activa al 100%.", "Lucario": "Aura escala hasta 190%."};</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return g[name] || "Sin mecánicas de carga críticas.";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function getSafeMoves(name) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const s = {"Cloud": "Bair (-3), Fair (-4).", "Joker": "Bair (-4), Fair 1.", "Pikachu": "Nair (-3), Bair (-4).", "Pyra / Mythra": "Mythra Nair (-5), Pyra Dair (-5).", "Fox": "Nair (-3), Bair (-4).", "Mario": "Bair (-2), Up-Air (-2).", "Sheik": "Fair (-2), Bair (-3).", "Wolf": "Fair (-3), Bair (-4).", "Lucina": "Fair (-4).", "Mr. Game &amp; Watch": "Bair (-4), Up-B (Frame 3 invencible)."};</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return s[name] || "Consulta UFD para aéreos -2 o -3; espaciar con Slingshot es clave.";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function getBnbAndTech(name) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const b = {"Pikachu": { bnb: "Nair loops, Drag-Down Up-Air.", tech: "Asigna salto a ZL/ZR para Slingshots." }, "Joker": { bnb: "First-hit Fair -&gt; Drag-Down Up-Air.", tech: "Usa ZL/ZR para facilitar drag-downs." }, "Cloud": { bnb: "Cross-slash baits, Bair chaining.", tech: "Saltos en ZL/ZR para optimizar presión." }, "Pyra / Mythra": { bnb: "Mythra D-Tilt -&gt; U-Tilt.", tech: "Attack Cancel Bair y saltos en ZL/ZR." }, "Mr. Game &amp; Watch": { bnb: "D-Throw -&gt; Nair -&gt; Up-Air.", tech: "Configura ZL/ZR para soltar escudo rápido." }, "Palutena": { bnb: "D-Throw -&gt; Nair (x2) -&gt; Fair.", tech: "Teleport Cancel y Slingshot Bair." }};</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return b[name] || { bnb: "Combos de agarre básicos y secuencias de Nair.", tech: "Domina el espaciado y Slingshot con salto en ZL/ZR." };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function getStagePref(arch) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>arch = arch.toLowerCase();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (arch.includes("zoner") || arch.includes("trapper")) return { pick: "Destino Final, Town &amp; City", ban: "Battlefield" };</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (arch.includes("combo") || arch.includes("brawler") || arch.includes("rushdown")) return { pick: "Battlefield, Small Battlefield", ban: "Destino Final" };</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (arch.includes("swordfighter")) return { pick: "Town &amp; City, Small Battlefield", ban: "Yoshi's Story" };</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (arch.includes("heavyweight")) return { pick: "Small Battlefield, Smashville", ban: "Destino Final" };</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return { pick: "Small Battlefield, Pokémon Stadium 2", ban: "Destino Final" };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const tierWeights = { "S+": 1, "S-": 2, "A+": 3, "A": 4, "A-": 5, "B+": 6, "B-": 7, "C+": 8, "C-": 9, "D+": 10, "D-": 11, "E": 12 };</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const db = [</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Mario", arch: "Brawler / Combo", tier: "A", oos: "Super Jump Punch (Frame 3) y Nair.", best: ["Fox", "Falcon", "Heavyweights"], worst: ["Min Min", "Lucina", "Swordfighters"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Donkey Kong", arch: "Heavyweight / Grappler", tier: "B+", oos: "Deficiente.", best: ["Little Mac", "Dr. Mario"], worst: ["Pikachu", "Joker", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Link", arch: "Zoner / Swordfighter", tier: "C-", oos: "Spin Attack (Frame 6).", best: ["Heavyweights"], worst: ["Pikachu", "Fox", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Samus", arch: "Zoner", tier: "A+", oos: "Screw Attack (Frame 6).", best: ["Heavyweights", "K. Rool"], worst: ["Fox", "Pikachu", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Dark Samus", arch: "Zoner", tier: "A+", oos: "Screw Attack (Frame 6).", best: ["Heavyweights"], worst: ["Fox", "Pikachu", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Yoshi", arch: "Brawler / Rushdown", tier: "S-", oos: "Nair (Frame 6).", best: ["Little Mac", "Dr. Mario"], worst: ["Lucina", "Cloud", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Kirby", arch: "Brawler", tier: "C-", oos: "Up-B lento.", best: ["Little Mac", "Ganondorf"], worst: ["Min Min", "Palutena", "Cloud"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Fox", arch: "Rushdown", tier: "S-", oos: "Up-Smash (Frame 8).", best: ["Heavyweights", "Ridley"], worst: ["Pikachu", "Min Min", "ROB"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Pikachu", arch: "Rushdown / Combo", tier: "A+", oos: "Up-Smash, Nair rápido.", best: ["Heavyweights", "Fox"], worst: ["Ness", "Mr. Game &amp; Watch", "Steve"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Luigi", arch: "Grappler", tier: "S-", oos: "Up-B (Frame 1 OoS - Letal).", best: ["Fast-fallers", "Falcon"], worst: ["Swordfighters", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Ness", arch: "Zoner / Combo", tier: "B-", oos: "Nair y PK Thunder.", best: ["Pikachu", "Mega Man"], worst: ["Lucina", "Cloud", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Captain Falcon", arch: "Rushdown", tier: "A-", oos: "Up-Smash y Nair.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Joker"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Jigglypuff", arch: "Bait &amp; Punish / Aerial", tier: "C-", oos: "Rest situacional.", best: ["Heavyweights"], worst: ["Min Min", "Cloud", "Lucina"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Peach", arch: "Combo / Technical", tier: "S-", oos: "Turnip pull, Toad.", best: ["Heavyweights"], worst: ["Min Min", "Cloud", "Pikachu"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Daisy", arch: "Combo / Technical", tier: "S-", oos: "Turnip pull, Toad.", best: ["Heavyweights"], worst: ["Min Min", "Cloud", "Pikachu"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Bowser", arch: "Heavyweight / Grappler", tier: "C-", oos: "Whirling Fortress (Up-B, Frame 6).", best: ["Pikachu", "Pichu"], worst: ["Min Min", "Joker", "Palutena"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Ice Climbers", arch: "Combo / Technical", tier: "B+", oos: "Up-Smash y desyncs.", best: ["Heavyweights"], worst: ["Min Min", "Palutena"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Sheik", arch: "Rushdown / Combo", tier: "B-", oos: "Nair y Bouncing Fish.", best: ["Fast-fallers"], worst: ["Heavyweights", "Min Min", "Steve"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Zelda", arch: "Trapper / Zoner", tier: "D+", oos: "Nayru's Love.", best: ["Heavyweights"], worst: ["Pikachu", "Sonic", "Fox"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Dr. Mario", arch: "Brawler", tier: "D-", oos: "Up-B rápido (Frame 3).", best: ["Heavyweights", "Mac"], worst: ["Swordfighters", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Pichu", arch: "Rushdown / Glass Cannon", tier: "B-", oos: "Nair y Up-Smash.", best: ["Heavyweights"], worst: ["Ness", "G&amp;W", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Falco", arch: "Combo / Bait &amp; Punish", tier: "A-", oos: "Up-Smash.", best: ["Fast-fallers"], worst: ["Min Min", "Palutena", "Pikachu"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Marth", arch: "Swordfighter", tier: "D-", oos: "Dolphin Slash.", best: ["Heavyweights"], worst: ["Min Min", "Pikachu", "Sonic"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Lucina", arch: "Swordfighter", tier: "B+", oos: "Dolphin Slash (Frame 5).", best: ["Heavyweights", "Mario"], worst: ["Min Min", "Pikachu", "Joker"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Young Link", arch: "Zoner / Rushdown", tier: "B+", oos: "Spin Attack.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Wolf"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Ganondorf", arch: "Heavyweight", tier: "E", oos: "Up-Smash lento.", best: ["Little Mac"], worst: ["Pikachu", "Joker", "Min Min", "Steve"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Mewtwo", arch: "Glass Cannon / Zoner", tier: "D+", oos: "Up-Smash.", best: ["Heavyweights"], worst: ["Pikachu", "Fox", "Wolf"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Roy", arch: "Rushdown / Swordfighter", tier: "A", oos: "Blazer (Frame 6).", best: ["Zoners lentos"], worst: ["Min Min", "Pikachu", "Cloud"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Chrom", arch: "Rushdown / Swordfighter", tier: "C-", oos: "Soaring Slash.", best: ["Zoners lentos"], worst: ["Min Min", "Joker", "Steve"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Mr. Game &amp; Watch", arch: "Bait &amp; Punish / Anti-Meta", tier: "S+", oos: "Fire! (Frame 3 invencible).", best: ["Pikachu", "Joker"], worst: ["Min Min", "Palutena"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Meta Knight", arch: "Bait &amp; Punish / Aerial", tier: "B-", oos: "Up-Smash.", best: ["Heavyweights"], worst: ["Min Min", "Cloud", "Palutena"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Pit", arch: "All-Rounder", tier: "B+", oos: "Nair.", best: ["Heavyweights"], worst: ["Min Min", "Palutena", "Pikachu"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Dark Pit", arch: "All-Rounder", tier: "B+", oos: "Nair.", best: ["Heavyweights"], worst: ["Min Min", "Palutena", "Pikachu"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Zero Suit Samus", arch: "Bait &amp; Punish", tier: "B+", oos: "Boost Kick.", best: ["Heavyweights", "Steve"], worst: ["Pikachu", "Joker", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Wario", arch: "Bait &amp; Punish", tier: "A+", oos: "Wario Bike.", best: ["Heavyweights"], worst: ["Cloud", "Min Min", "Sonic"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Snake", arch: "Zoner / Trapper", tier: "S+", oos: "Granada (Frame 1).", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Fox"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Ike", arch: "Swordfighter", tier: "D-", oos: "Aether.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Sonic"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Pokémon Trainer", arch: "Stance / Versatile", tier: "B+", oos: "Variable.", best: ["Fast-fallers"], worst: ["Swordfighters largos"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Diddy Kong", arch: "Trapper / Rushdown", tier: "S-", oos: "Monkey Flip.", best: ["Heavyweights"], worst: ["Pikachu", "Pac-Man", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Lucas", arch: "Trapper / Zoner", tier: "C+", oos: "Up-Smash.", best: ["Heavyweights"], worst: ["Pikachu", "Cloud", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Sonic", arch: "Bait &amp; Punish", tier: "S+", oos: "Spin Dash.", best: ["Heavyweights", "Mac"], worst: ["Min Min", "Steve", "Pikachu"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "King Dedede", arch: "Heavyweight / Trapper", tier: "D-", oos: "Up-Smash lento.", best: ["Little Mac"], worst: ["Min Min", "Pikachu", "Joker"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Olimar", arch: "Zoner", tier: "A+", oos: "Up-Smash rápido.", best: ["Heavyweights"], worst: ["Min Min", "Cloud", "Wolf"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Lucario", arch: "Bait &amp; Punish", tier: "C-", oos: "Force Palm.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Fox"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "R.O.B.", arch: "All-Rounder / Zoner", tier: "S+", oos: "Nair y Up-Smash.", best: ["Heavyweights"], worst: ["Pikachu", "Joker", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Toon Link", arch: "Zoner", tier: "B+", oos: "Up-B rápido.", best: ["Heavyweights"], worst: ["Min Min", "Pikachu", "Wolf"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Wolf", arch: "All-Rounder / Zoner", tier: "A", oos: "Up-Smash.", best: ["Heavyweights"], worst: ["Pikachu", "Joker", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Villager", arch: "Zoner / Trapper", tier: "D-", oos: "Pocket.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Cloud"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Mega Man", arch: "Zoner", tier: "A", oos: "Leaf Shield.", best: ["Pesados"], worst: ["Pikachu", "Fox", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Wii Fit Trainer", arch: "Trapper / Brawler", tier: "C+", oos: "Up-Smash.", best: ["Heavyweights"], worst: ["Min Min", "Pikachu"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Rosalina &amp; Luma", arch: "Trapper", tier: "B+", oos: "Up-Smash.", best: ["Zoners", "Ness"], worst: ["Min Min", "Pikachu", "Cloud"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Little Mac", arch: "Rushdown (Ground)", tier: "E", oos: "Pésimo escudo.", best: ["Ganondorf"], worst: ["Todo el top tier"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Greninja", arch: "Bait &amp; Punish", tier: "A-", oos: "Up-Smash.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Sonic"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Mii Brawler", arch: "Brawler / Combo", tier: "A", oos: "Up-B custom.", best: ["Heavyweights"], worst: ["Swordies", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Mii Gunner", arch: "Zoner", tier: "C+", oos: "Nair.", best: ["Heavyweights"], worst: ["Min Min", "Fox", "Pikachu"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Mii Swordfighter", arch: "Swordfighter / Zoner", tier: "D+", oos: "Up-Smash.", best: ["Heavyweights"], worst: ["Min Min", "Joker"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Palutena", arch: "All-Rounder", tier: "A+", oos: "Nair y Up-Smash.", best: ["Brawlers", "Mac"], worst: ["Pikachu", "Min Min", "Fox"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Pac-Man", arch: "Trapper", tier: "B+", oos: "Hydrant.", best: ["Heavyweights"], worst: ["Min Min", "Pikachu", "Cloud"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Robin", arch: "Zoner", tier: "C+", oos: "Nosferatu.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Wolf"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Shulk", arch: "Swordfighter / Stance", tier: "A-", oos: "Monado Arts.", best: ["Zoners"], worst: ["Pikachu", "Min Min", "Snake"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Bowser Jr.", arch: "Trapper", tier: "C-", oos: "Mechakoopa.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Duck Hunt", arch: "Zoner", tier: "B-", oos: "Trick Shot.", best: ["Pesados"], worst: ["Pikachu", "Min Min", "Fox"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Ryu", arch: "Combo / FGC", tier: "A", oos: "Shoryuken (Frame 6).", best: ["Heavyweights"], worst: ["Min Min", "Pikachu", "Sonic"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Ken", arch: "Combo / FGC", tier: "B+", oos: "Shoryuken de fuego.", best: ["Heavyweights"], worst: ["Min Min", "Pikachu", "Sonic"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Cloud", arch: "Swordfighter", tier: "A", oos: "Climhazzard.", best: ["Heavyweights"], worst: ["Min Min", "Joker", "Pyra / Mythra"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Corrin", arch: "Swordfighter", tier: "A-", oos: "Pincho.", best: ["Heavyweights"], worst: ["Min Min", "Pikachu", "Sonic"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Bayonetta", arch: "Combo / Bait &amp; Punish", tier: "A", oos: "Witch Time.", best: ["Pesados"], worst: ["Pikachu", "Min Min", "Joker"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Inkling", arch: "Rushdown / Bait", tier: "B-", oos: "Roller.", best: ["Pesados"], worst: ["Pikachu", "Min Min", "Lucina"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Ridley", arch: "Heavyweight", tier: "C+", oos: "Nair.", best: ["Mac", "Ganondorf"], worst: ["Pikachu", "Min Min", "Joker"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Simon", arch: "Zoner", tier: "E", oos: "Up-B rápido.", best: ["Pesados"], worst: ["Pikachu", "Min Min", "Sonic"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Richter", arch: "Zoner", tier: "E", oos: "Up-B rápido.", best: ["Pesados"], worst: ["Pikachu", "Min Min", "Sonic"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "King K. Rool", arch: "Heavyweight / Zoner", tier: "D-", oos: "Nair armor.", best: ["Mac"], worst: ["Pikachu", "Min Min", "Sonic"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Isabelle", arch: "Trapper", tier: "C+", oos: "Fishing Rod.", best: ["Pesados"], worst: ["Pikachu", "Min Min", "Cloud"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Incineroar", arch: "Heavyweight / Grappler", tier: "C-", oos: "Revenge.", best: ["Pesados"], worst: ["Min Min", "Pikachu", "Sonic"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Piranha Plant", arch: "Trapper", tier: "C-", oos: "Ptooie.", best: ["Mac"], worst: ["Pikachu", "Min Min", "Sonic"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Joker", arch: "Rushdown / All-Rounder", tier: "S-", oos: "Rebels Guard.", best: ["Heavyweights"], worst: ["Pikachu", "Sonic", "G&amp;W"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Hero", arch: "Zoner / RNG", tier: "A", oos: "Nair mágico.", best: ["Zoners lentos"], worst: ["Pikachu", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Banjo &amp; Kazooie", arch: "Brawler", tier: "C-", oos: "Wonderwing.", best: ["Pesados"], worst: ["Min Min", "Pikachu", "Wolf"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Terry", arch: "Combo / FGC", tier: "B+", oos: "Power Dunk.", best: ["Heavyweights"], worst: ["Min Min", "Pikachu"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Byleth", arch: "Swordfighter / Zoner", tier: "B-", oos: "Nair asombroso.", best: ["Pesados", "Mac"], worst: ["Min Min", "Pikachu", "Joker"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Min Min", arch: "Zoner Extremo", tier: "S+", oos: "Nair, Up-Smash.", best: ["Swordfighters", "Mac"], worst: ["Pikachu", "Joker", "ZSS"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Steve", arch: "Trapper / Constructor", tier: "S+", oos: "Minecart.", best: ["Mac", "Pesados"], worst: ["Min Min", "Cloud", "Sephiroth"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Sephiroth", arch: "Swordfighter / Zoner", tier: "B-", oos: "Nair.", best: ["Pesados"], worst: ["Pikachu", "Min Min"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Pyra / Mythra", arch: "Swordfighter", tier: "S-", oos: "Foresight.", best: ["Zoners"], worst: ["Min Min", "Diddy Kong"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Kazuya", arch: "Combo / FGC", tier: "S+", oos: "EWGF.", best: ["Pesados"], worst: ["Min Min", "Sonic", "Pikachu"] },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ name: "Sora", arch: "Aerial / Combo", tier: "A", oos: "Up-B.", best: ["Heavies"], worst: ["Min Min", "Pikachu", "Cloud"] }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const tierColors = { "S": "var(--tier-s)", "A": "var(--tier-a)", "B": "var(--tier-b)", "C": "var(--tier-c)", "D": "var(--tier-d)", "E": "var(--tier-e)" };</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const selA = document.getElementById("fighterA"); const selB = document.getElementById("fighterB");</p>
+<p class="p1"><span class="Apple-converted-space">        </span>db.sort((a,b) =&gt; a.name.localeCompare(b.name)).forEach(f =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>selA.add(new Option(f.name, f.name)); selB.add(new Option(f.name, f.name));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function getAvatarInitials(name) { return name.substring(0,2).toUpperCase(); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// LISTA VACÍA POR DEFECTO HASTA QUE EL USUARIO AGREGUE SUS MAINS</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let myMains = JSON.parse(localStorage.getItem('ssbu_mains')) || [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let activeMainFilter = "";</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function renderMainsFilter() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const container = document.getElementById("mainsContainer");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>container.innerHTML = `&lt;span style="font-size: 0.85rem; font-weight: 700; color: var(--text-body); margin-right: 0.5rem;"&gt;⚡ Mis Mains:&lt;/span&gt;`;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (myMains.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>container.innerHTML += `&lt;span style="font-size: 0.8rem; font-style: italic; color: var(--text-body);"&gt;Aún no tienes mains guardados. Abre un personaje y toca "⭐ Añadir a Mains".&lt;/span&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>myMains.forEach(main =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const btn = document.createElement("button");</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>btn.className = `ssbu-main-btn ${activeMainFilter === main ? 'active' : ''}`;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>btn.onclick = () =&gt; filterByMain(main);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>btn.innerHTML = `⭐ ${main}`;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>container.appendChild(btn);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const showAllBtn = document.createElement("button");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>showAllBtn.className = `ssbu-main-btn ${activeMainFilter === "" ? 'active' : ''}`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>showAllBtn.style.background = "transparent"; showAllBtn.style.borderColor = "transparent";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>showAllBtn.onclick = () =&gt; filterByMain('');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>showAllBtn.innerHTML = `🧹 Todos`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>container.appendChild(showAllBtn);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function filterByMain(mainName) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>activeMainFilter = mainName;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("searchInput").value = "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderMainsFilter();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderGrid();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function toggleMainStatus() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(!currentModalFighter) return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const idx = myMains.indexOf(currentModalFighter);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const btn = document.getElementById("btnToggleMain");</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(idx &gt; -1) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>myMains.splice(idx, 1);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>btn.classList.remove('is-main'); btn.innerHTML = "☆ Añadir a Mains";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>myMains.push(currentModalFighter);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>btn.classList.add('is-main'); btn.innerHTML = "⭐ Quitar de Mains";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>localStorage.setItem('ssbu_mains', JSON.stringify(myMains));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderMainsFilter();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderGrid();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Lógica VS</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function generateGameplan(player, opponent) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let plan = `&lt;div style="margin-bottom:0.75rem;"&gt;&lt;strong style="color:var(--text-title);"&gt;${player.name}:&lt;/strong&gt; `;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let pArch = player.arch.toLowerCase(); let oArch = opponent.arch.toLowerCase();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (pArch.includes("zoner") || pArch.includes("trapper")) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>plan += `Juega al desgaste. Mantén a ${opponent.name} a raya y dicta el ritmo. Usa tu ${player.oos.split('.')[0]} OoS si se acerca demasiado. `;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else if (pArch.includes("rushdown") || pArch.includes("combo")) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (oArch.includes("zoner") || oArch.includes("trapper")) plan += `Paciencia. Camina y usa parries para romper su muro defensivo. Cero saltos predecibles. `;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>else plan += `Presión constante. Capitaliza sus errores y llévalo rápido al ledge. `;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else if (pArch.includes("swordfighter")) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>plan += `Usa la punta de tu espada (espaciado perfecto) para crear un muro impenetrable y evitar castigos OoS de ${opponent.name}. `;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else if (pArch.includes("heavyweight")) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>plan += `Paciencia extrema. Sobrevive el daño inicial y usa tu fuerza bruta para robar el stock con una sola buena lectura. `;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>plan += `Adapta tu juego a los hábitos de ${opponent.name}. Castiga sus opciones repetitivas. `;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>plan += `&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return plan;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function analyzeMatchup() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const vBox = document.getElementById("verdictBox");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const vHeader = document.getElementById("verdictHeader");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const vText = document.getElementById("verdictText");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const nA = selA.value; const nB = selB.value;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(!nA || !nB) return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(nA === nB) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>vBox.style.borderColor = "var(--even)"; vHeader.style.color = "var(--even)";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>vHeader.textContent = "🤝 Espejo (50-50 Igualado)";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>vText.innerHTML = `&lt;strong&gt;Razón Técnica:&lt;/strong&gt; Duelo de fundamentos. Gana quien mejor lea los hábitos y opciones defensivas del otro.`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const pA = db.find(f =&gt; f.name === nA); const pB = db.find(f =&gt; f.name === nB);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let aWins = pA.best.some(m =&gt; pB.name.includes(m) || pB.arch.includes(m)) || pB.worst.some(m =&gt; pA.name.includes(m) || pA.arch.includes(m));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let bWins = pB.best.some(m =&gt; pA.name.includes(m) || pA.arch.includes(m)) || pB.worst.some(m =&gt; pB.name.includes(m) || pB.arch.includes(m));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if ((aWins &amp;&amp; bWins) || (!aWins &amp;&amp; !bWins)) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const tiers = {"S+":12, "S-":11, "A+":10, "A":9, "A-":8, "B+":7, "B-":6, "C+":5, "C-":4, "D+":3, "D-":2, "E":1};</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if(tiers[pA.tier] &gt; tiers[pB.tier] + 2) { aWins = true; bWins = false; }</p>
+<p class="p1"><span class="Apple-converted-space">                </span>else if(tiers[pB.tier] &gt; tiers[pA.tier] + 2) { bWins = true; aWins = false; }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>let verdictHtml = "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(aWins &amp;&amp; !bWins) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>vBox.style.borderColor = "var(--win)"; vHeader.style.color = "var(--win)";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>vHeader.textContent = `🟢 Ventaja Positiva: ${pA.name}`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>verdictHtml = `&lt;strong&gt;Razón Técnica:&lt;/strong&gt; ${pA.name} anula el plan de juego de ${pB.name} y castiga sus aproximaciones con facilidad.`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else if(bWins &amp;&amp; !aWins) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>vBox.style.borderColor = "var(--loss)"; vHeader.style.color = "var(--loss)";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>vHeader.textContent = `🔴 Ventaja Positiva: ${pB.name}`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>verdictHtml = `&lt;strong&gt;Razón Técnica:&lt;/strong&gt; El kit de ${pB.name} contrarresta duramente a ${pA.name}, forzando riesgos excesivos.`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>vBox.style.borderColor = "var(--even)"; vHeader.style.color = "var(--even)";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>vHeader.textContent = `⚖️ Matchup Igualado (Even)`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>verdictHtml = `&lt;strong&gt;Razón Técnica:&lt;/strong&gt; Parejo. Depende totalmente de quién gestione mejor el neutral y la presión OoS.`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const stageA = getStagePref(pA.arch); const stageB = getStagePref(pB.arch);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const stages = ["Battlefield", "Final Destination", "Smashville", "Town &amp; City", "Pokémon Stadium 2", "Lylat Cruise", "Kalos Pokémon League", "Small Battlefield"];</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let stagesHtml = `&lt;div class="stage-striker"&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>stages.forEach(s =&gt; { stagesHtml += `&lt;button class="stage-btn" onclick="this.classList.toggle('banned')"&gt;${s}&lt;/button&gt;`; });</p>
+<p class="p1"><span class="Apple-converted-space">            </span>stagesHtml += `&lt;/div&gt;`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>verdictHtml += `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="ssbu-gameplan-box"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="ssbu-gameplan-title"&gt;🎮 Planes Estratégicos&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>${generateGameplan(pA, pB)}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>${generateGameplan(pB, pA)}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="ssbu-gameplan-title" style="margin-top:0.5rem; color:var(--yellow);"&gt;🗺️ Stage Striker (Toca para Banear)&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div style="font-size:0.85rem; color:var(--text-body); margin-bottom: 0.5rem;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;strong&gt;Si juegas ${pA.name}:&lt;/strong&gt; Prioriza &lt;em&gt;${stageA.pick}&lt;/em&gt;. Banea &lt;em&gt;${stageA.ban}&lt;/em&gt;.&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;strong&gt;Si juegas ${pB.name}:&lt;/strong&gt; Prioriza &lt;em&gt;${stageB.pick}&lt;/em&gt;. Banea &lt;em&gt;${stageB.ban}&lt;/em&gt;.</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>${stagesHtml}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>vText.innerHTML = verdictHtml;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function renderGrid() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const query = document.getElementById("searchInput").value.toLowerCase();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const sortMode = document.getElementById("sortSelect").value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const grid = document.getElementById("rosterGrid");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>grid.innerHTML = "";</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>let filtered = [...db];</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Filtrado</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(activeMainFilter) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>filtered = filtered.filter(f =&gt; f.name === activeMainFilter);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else if (query) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>filtered = filtered.filter(f =&gt; f.name.toLowerCase().includes(query) || f.arch.toLowerCase().includes(query));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Ordenamiento</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (sortMode === 'tier') {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>filtered.sort((a, b) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>let wA = tierWeights[a.tier] || 99;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>let wB = tierWeights[b.tier] || 99;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if(wA !== wB) return wA - wB;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>return a.name.localeCompare(b.name);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>filtered.sort((a, b) =&gt; a.name.localeCompare(b.name));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(filtered.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>grid.innerHTML = `&lt;div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-body);"&gt;No se encontraron luchadores.&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>filtered.forEach(f =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const card = document.createElement("div");</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const isMain = myMains.includes(f.name);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>card.className = `ssbu-card ${isMain ? 'is-main' : ''}`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>card.onclick = () =&gt; openModal(f);</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>const baseTier = f.tier.charAt(0);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const tColor = tierColors[baseTier] || "var(--text-body)";</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>card.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="ssbu-card-star"&gt;⭐&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="ssbu-avatar" style="background: linear-gradient(135deg, ${tColor}, var(--bg-panel)); border: 1px solid ${tColor};"&gt;${getAvatarInitials(f.name)}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="ssbu-card-info"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="ssbu-card-name"&gt;${f.name}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="ssbu-card-arch" style="color:${tColor};"&gt;Tier ${f.tier}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>grid.appendChild(card);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>let currentModalFighter = null;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function closeFighterCard() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("fighterModal").classList.remove("active");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.body.classList.remove('modal-open');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>currentModalFighter = null;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function closeOverlay(e) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(e.target.id === 'fighterModal') closeFighterCard();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function openModal(fighter) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>currentModalFighter = fighter.name;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("modName").textContent = fighter.name;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const btn = document.getElementById("btnToggleMain");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(myMains.includes(fighter.name)) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>btn.classList.add('is-main'); btn.innerHTML = "⭐ Quitar de Mains";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>btn.classList.remove('is-main'); btn.innerHTML = "☆ Añadir a Mains";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const baseTier = fighter.tier.charAt(0);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const tColor = tierColors[baseTier] || "var(--text-body)";</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const tBadge = document.getElementById("modTier");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tBadge.textContent = `Tier Oficial: ${fighter.tier}`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tBadge.style.background = tColor;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const avatar = document.getElementById("modAvatar");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>avatar.textContent = getAvatarInitials(fighter.name);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>avatar.style.background = `linear-gradient(135deg, ${tColor}, var(--bg-panel))`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>avatar.style.borderColor = tColor;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("modBest").innerHTML = fighter.best.map(t =&gt; `&lt;span class="ssbu-tag" style="color:var(--green); border-color:var(--green);"&gt;${t}&lt;/span&gt;`).join('');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("modWorst").innerHTML = fighter.worst.map(t =&gt; `&lt;span class="ssbu-tag" style="color:var(--red); border-color:var(--red);"&gt;${t}&lt;/span&gt;`).join('');</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("modWeight").innerHTML = `&lt;strong&gt;Peso y Supervivencia:&lt;/strong&gt; ${getWeight(fighter.name)}`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("modKc").innerHTML = `&lt;strong&gt;Kill Confirms Principales:&lt;/strong&gt;&lt;br&gt;${getKillConfirms(fighter.name)}`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("modGimmick").innerHTML = `&lt;strong&gt;Timers y Gimmicks:&lt;/strong&gt; ${getGimmicks(fighter.name)}`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("modOos").innerHTML = `&lt;strong&gt;Mecánica Principal:&lt;/strong&gt; ${fighter.oos}`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("modSafe").innerHTML = `&lt;strong&gt;Ataques Seguros en Escudo:&lt;/strong&gt;&lt;br&gt;${getSafeMoves(fighter.name)}`;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const techData = getBnbAndTech(fighter.name);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("modBnb").innerHTML = `&lt;strong&gt;Bread &amp; Butter (B&amp;B):&lt;/strong&gt;&lt;br&gt;${techData.bnb}`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("modTech").innerHTML = `&lt;strong&gt;Ejecución y Botones (Tech):&lt;/strong&gt;&lt;br&gt;${techData.tech}`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const savedNotes = localStorage.getItem(`ssbu_notes_${fighter.name}`) || "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const notesArea = document.getElementById("charNotes");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>notesArea.value = savedNotes;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("saveIndicator").style.opacity = 0;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.querySelectorAll('.ssbu-tab-btn')[0].click();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById("fighterModal").classList.add("active");</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.body.classList.add('modal-open');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function switchTab(tabId) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.querySelectorAll('.ssbu-tab-btn').forEach(b =&gt; b.classList.remove('active'));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.querySelectorAll('.ssbu-tab-content').forEach(c =&gt; c.classList.remove('active'));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>event.target.classList.add('active');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById(tabId).classList.add('active');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("charNotes").addEventListener("input", function(e) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(currentModalFighter) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>localStorage.setItem(`ssbu_notes_${currentModalFighter}`, e.target.value);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const ind = document.getElementById("saveIndicator");</p>
+<p class="p1"><span class="Apple-converted-space">                </span>ind.style.opacity = 1;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>clearTimeout(window.saveTimeout);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>window.saveTimeout = setTimeout(() =&gt; { ind.style.opacity = 0; }, 2000);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Inicialización</p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderMainsFilter();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderGrid();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
