@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSBU Pro Analytics</title>
+    
+    <link rel="manifest" id="manifest-link">
+    <meta name="theme-color" content="#060913">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Outfit:wght@600;700;900&display=swap');
+
+        :root {
+            --bg-base: #060913; 
+            --bg-gradient: radial-gradient(circle at 50% 0%, #172340 0%, #060913 60%);
+            --bg-panel: rgba(15, 23, 42, 0.6);
+            --bg-glass: rgba(15, 23, 42, 0.75);
+            --border-glow: rgba(56, 189, 248, 0.3); 
+            --border-dim: rgba(255, 255, 255, 0.1);
+            --accent-main: #38bdf8; 
+            --accent-alt: #818cf8;
+            --text-title: #ffffff; 
+            --text-body: #94a3b8;
+            
+            --tier-s: #ff3b3b; --tier-a: #ff9933; --tier-b: #ffcc33; 
+            --tier-c: #33cc66; --tier-d: #3399ff; --tier-e: #9933cc;
+            --win: #10b981; --loss: #f43f5e; --even: #f59e0b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background: var(--bg-gradient); 
+            background-attachment: fixed;
+            font-family: 'Inter', sans-serif; 
+            color: var(--text-body); 
+            line-height: 1.6; 
+            min-height: 100vh;
+        }
+        body.modal-open { overflow: hidden; }
+
+        .ssbu-container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem; display: flex; flex-direction: column; gap: 2rem; }
+
+        /* Encabezado */
+        .ssbu-header { text-align: center; margin-top: 1rem; position: relative;}
+        .ssbu-header h1 { font-family: 'Outfit', sans-serif; font-size: 2.6rem; font-weight: 900; text-transform: uppercase; background: linear-gradient(135deg, #ffffff, var(--accent-alt), #f43f5e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; letter-spacing: -0.5px;}
+        .ssbu-header p { font-size: 0.95rem; max-width: 500px; margin: 0 auto; opacity: 0.8; }
+
+        /* Botones de Respaldo */
+        .backup-controls { position: absolute; top: 0; right: 0; display: flex; gap: 0.5rem; }
+        .btn-backup { background: rgba(255,255,255,0.05); border: 1px solid var(--border-dim); color: var(--text-body); padding: 0.4rem; border-radius: 8px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;}
+        .btn-backup:hover { background: var(--accent-main); color: #fff; }
+
+        /* Paneles Estilo App Nativa */
+        .ssbu-panel { 
+            background: var(--bg-glass); 
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-dim); 
+            border-radius: 20px; 
+            padding: 1.8rem; 
+            box-shadow: 0 24px 40px -12px rgba(0,0,0,0.6); 
+            position: relative; 
+        }
+        
+        .ssbu-panel-title { font-family: 'Outfit', sans-serif; font-size: 1.4rem; color: var(--text-title); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; letter-spacing: 0.5px;}
+
+        /* Simulador VS */
+        .ssbu-vs-arena { display: flex; flex-direction: column; gap: 1.2rem; }
+        .ssbu-selectors { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; }
+        @media (max-width: 600px) { .ssbu-selectors { grid-template-columns: 1fr; } .ssbu-vs-badge { display: none; } .backup-controls {position: relative; justify-content: center; margin-bottom: 1rem;}}
+        
+        .ssbu-select { 
+            width: 100%; padding: 1.1rem; 
+            background: rgba(0,0,0,0.4); border: 1px solid var(--border-dim); border-radius: 14px; 
+            color: var(--text-title); font-size: 1rem; outline: none; cursor: pointer; transition: all 0.3s ease; 
+            backdrop-filter: blur(10px);
+        }
+        .ssbu-select:focus { border-color: var(--accent-main); box-shadow: 0 0 15px var(--border-glow); }
+        
+        .ssbu-vs-badge { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 900; color: rgba(255,255,255,0.3); }
+        
+        .ssbu-verdict-box { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 1.5rem; border-left: 5px solid var(--border-dim); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .ssbu-verdict-header { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.6rem; font-family: 'Outfit', sans-serif; letter-spacing: 0.5px;}
+        .ssbu-verdict-text { font-size: 0.95rem; color: #cbd5e1; }
+        .ssbu-gameplan-box { margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--border-dim); display: flex; flex-direction: column; gap: 1rem; }
+        .ssbu-gameplan-title { color: var(--accent-main); font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem; }
+
+        /* Stage Striker */
+        .stage-striker { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;}
+        .stage-btn { background: var(--bg-panel); border: 1px solid var(--border-dim); color: var(--text-title); padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; user-select: none; position: relative; overflow: hidden;}
+        .stage-btn.banned { opacity: 0.5; color: var(--text-body); border-color: var(--loss); background: rgba(244, 63, 94, 0.1);}
+        .stage-btn.banned::after { content: ''; position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--loss); transform: rotate(-5deg); }
+
+        /* Sticky Search Bar & Controls */
+        .ssbu-sticky-header {
+            position: sticky; top: 1rem; z-index: 40;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-dim); border-radius: 20px;
+            padding: 1.2rem; margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .search-sort-row { display: grid; grid-template-columns: 1fr auto; gap: 0.8rem; margin-bottom: 1rem; }
+        @media (max-width: 600px) { .search-sort-row { grid-template-columns: 1fr; } }
+
+        .ssbu-search-wrapper { position: relative; }
+        .ssbu-search-input { 
+            width: 100%; padding: 1.1rem 1rem 1.1rem 3.2rem; 
+            background: rgba(0,0,0,0.4); border: 1px solid var(--border-dim); border-radius: 14px; 
+            color: var(--text-title); font-size: 1.05rem; transition: all 0.3s ease; 
+        }
+        .ssbu-search-input:focus { outline: none; border-color: var(--accent-main); box-shadow: 0 0 20px var(--border-glow); }
+        .ssbu-search-icon { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); fill: var(--text-body); width: 20px; height: 20px; }
+        
+        .ssbu-sort-select {
+            background: rgba(0,0,0,0.4); border: 1px solid var(--border-dim); border-radius: 14px;
+            color: var(--text-title); padding: 0 1.2rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; outline: none;
+        }
+        .ssbu-sort-select:focus { border-color: var(--accent-main); }
+
+        .ssbu-mains-filter { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+        .ssbu-main-btn { 
+            background: rgba(255,255,255,0.05); border: 1px solid transparent; 
+            color: var(--text-body); padding: 0.5rem 0.9rem; border-radius: 10px; 
+            font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .ssbu-main-btn:hover, .ssbu-main-btn.active { background: var(--accent-main); color: #fff; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4); }
+
+        /* Roster Grid */
+        .ssbu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.2rem; max-height: 60vh; overflow-y: auto; padding-right: 0.4rem;}
+        
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ssbu-card { 
+            background: var(--bg-panel); border: 1px solid var(--border-dim); border-radius: 16px; 
+            padding: 1.2rem; cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; align-items: center; gap: 1.2rem; position: relative;
+        }
+        .ssbu-card:hover { border-color: var(--accent-main); transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.4); background: rgba(30, 41, 59, 0.8); }
+        
+        .ssbu-avatar { 
+            width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center; 
+            font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.4rem; color: #fff; 
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.5); box-shadow: inset 0 0 15px rgba(0,0,0,0.3); 
+        }
+        .ssbu-card-info { flex: 1; }
+        .ssbu-card-name { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--text-title); font-size: 1.1rem; letter-spacing: 0.3px;}
+        .ssbu-card-arch { font-size: 0.75rem; text-transform: uppercase; font-weight: 800; margin-top: 4px; letter-spacing: 0.5px;}
+        
+        .ssbu-card-star { position: absolute; right: 12px; top: 12px; color: #facc15; font-size: 1.2rem; display: none; filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.5));}
+        .ssbu-card.is-main .ssbu-card-star { display: block; }
+
+        /* Modal */
+        .ssbu-modal { 
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+            background: rgba(6, 9, 19, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            display: flex; justify-content: center; align-items: center; 
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 100; padding: 1rem; 
+        }
+        .ssbu-modal.active { opacity: 1; pointer-events: auto; }
+        
+        .ssbu-modal-content { 
+            background: #0f172a; border: 1px solid var(--border-dim); border-radius: 24px; 
+            width: 100%; max-width: 900px; max-height: 90vh; display: flex; flex-direction: column; 
+            transform: translateY(30px) scale(0.98); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        }
+        .ssbu-modal.active .ssbu-modal-content { transform: translateY(0) scale(1); }
+
+        .ssbu-modal-header { 
+            padding: 1.5rem 1.8rem; border-bottom: 1px solid var(--border-dim); 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: rgba(15, 23, 42, 0.95); z-index: 10;
+        }
+        .ssbu-modal-header-left { display: flex; align-items: center; gap: 1.2rem; }
+        .ssbu-modal-name { font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: var(--text-title); letter-spacing: -0.5px;}
+        .ssbu-modal-tier { padding: 0.3rem 0.8rem; border-radius: 8px; font-weight: 800; font-size: 0.8rem; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+        
+        .btn-toggle-main { background: rgba(255,255,255,0.05); border: 1px solid var(--border-dim); color: var(--text-title); padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; }
+        .btn-toggle-main:hover { border-color: #facc15; background: rgba(250, 204, 21, 0.1); }
+        .btn-toggle-main.is-main { background: rgba(250, 204, 21, 0.15); border-color: #facc15; color: #facc15; }
+        
+        .ssbu-close { background: rgba(255,255,255,0.1); border: none; color: var(--text-title); width: 36px; height: 36px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display:flex; justify-content:center; align-items:center; transition: all 0.2s;}
+        .ssbu-close:hover { background: var(--red); transform: rotate(90deg); }
+
+        /* Pestañas estilo iOS */
+        .ssbu-tabs-container { padding: 1rem 1.8rem 0; background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid var(--border-dim); }
+        .ssbu-tabs { display: flex; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 4px; position: relative;}
+        .ssbu-tab-btn { flex: 1; padding: 0.8rem 0; background: transparent; border: none; border-radius: 10px; color: var(--text-body); font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; position: relative; z-index: 2;}
+        .ssbu-tab-btn.active { color: var(--text-title); font-weight: 700; background: rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
+
+        .ssbu-tab-content { display: none; padding: 1.8rem; overflow-y: auto; flex-direction: column; gap: 1.5rem; background: var(--bg-base); }
+        .ssbu-tab-content.active { display: flex; animation: fadeUp 0.3s ease; }
+
+        .ssbu-data-block { background: rgba(15, 23, 42, 0.5); border-radius: 16px; padding: 1.2rem; border: 1px solid var(--border-dim); }
+        .ssbu-data-title { font-size: 0.85rem; text-transform: uppercase; font-weight: 800; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; letter-spacing: 0.5px;}
+        
+        .t-green { color: var(--green); } .t-red { color: var(--red); } .t-blue { color: var(--accent-main); } 
+        .t-purple { color: var(--accent-alt); } .t-yellow { color: var(--yellow); }
+
+        .ssbu-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .ssbu-tag { padding: 0.3rem 0.8rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; background: rgba(0,0,0,0.3); border: 1px solid var(--border-dim); color: #fff;}
+        .ssbu-stat-line { font-size: 0.9rem; margin-bottom: 0.8rem; line-height: 1.5; color: #cbd5e1;}
+        .ssbu-stat-line strong { color: var(--text-title); display: block; font-size: 0.95rem; margin-bottom: 0.2rem;}
+
+        .ssbu-notes-area { width: 100%; min-height: 120px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-dim); border-radius: 12px; padding: 1rem; color: var(--text-title); font-family: 'Inter', sans-serif; font-size: 0.95rem; resize: vertical; outline: none; transition: all 0.3s; }
+        .ssbu-notes-area:focus { border-color: var(--accent-main); box-shadow: 0 0 15px var(--border-glow); }
+
+        ::-webkit-scrollbar { width: 6px; } 
+        ::-webkit-scrollbar-track { background: transparent; } 
+        ::-webkit-scrollbar-thumb { background: var(--border-dim); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-main); }
+    </style>
+</head>
+<body>
+
+    <div class="ssbu-container">
+        <header class="ssbu-header">
+            <div class="backup-controls">
+                <button class="btn-backup" onclick="exportData()" title="Respaldar Datos">📥</button>
+                <button class="btn-backup" onclick="document.getElementById('importFile').click()" title="Cargar Datos">📤</button>
+                <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
+            </div>
+            <h1>SSBU Pro Analytics</h1>
+            <p>Herramienta Táctica Offline. Matchups, Frame Data y Notas.</p>
+        </header>
+
+        <!-- Simulador VS -->
+        <section class="ssbu-panel">
+            <h2 class="ssbu-panel-title">⚔️ Coach Analítico & Counterpicks</h2>
+            <div class="ssbu-vs-arena">
+                <div class="ssbu-selectors">
+                    <select id="fighterA" class="ssbu-select" onchange="analyzeMatchup()"><option value="">Tú...</option></select>
+                    <div class="ssbu-vs-badge">VS</div>
+                    <select id="fighterB" class="ssbu-select" onchange="analyzeMatchup()"><option value="">Oponente...</option></select>
+                </div>
+                <div id="verdictBox" class="ssbu-verdict-box" style="border-left-color: var(--border-dim);">
+                    <div id="verdictHeader" class="ssbu-verdict-header" style="color: var(--text-body);">Selecciona el Matchup</div>
+                    <div id="verdictText" class="ssbu-verdict-text">Genera un gameplan competitivo y recomendaciones de Stage Striking.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Header Pegajoso (Sticky) con Búsqueda, Ordenamiento y Mains -->
+        <div class="ssbu-sticky-header">
+            <div class="search-sort-row">
+                <div class="ssbu-search-wrapper">
+                    <svg class="ssbu-search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" fill="none"/><line x1="16.5" y1="16.5" x2="22" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    <input type="text" id="searchInput" class="ssbu-search-input" placeholder="Buscar personaje por nombre..." oninput="renderGrid()">
+                </div>
+                <select id="sortSelect" class="ssbu-sort-select" onchange="renderGrid()">
+                    <option value="alpha">🔤 Orden A-Z</option>
+                    <option value="tier">🏆 Por Tier Oficial</option>
+                </select>
+            </div>
+            
+            <div class="ssbu-mains-filter" id="mainsContainer"></div>
+        </div>
+
+        <!-- Grid de Personajes -->
+        <div id="rosterGrid" class="ssbu-grid"></div>
+    </div>
+
+    <!-- Modal Ficha Técnica Completa -->
+    <div id="fighterModal" class="ssbu-modal" onclick="closeOverlay(event)">
+        <div class="ssbu-modal-content" onclick="event.stopPropagation()">
+            <div class="ssbu-modal-header">
+                <div class="ssbu-modal-header-left">
+                    <div id="modAvatar" class="ssbu-avatar" style="width: 56px; height: 56px; font-size:1.4rem;">M</div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <h2 id="modName" class="ssbu-modal-name">Name</h2>
+                            <button id="btnToggleMain" class="btn-toggle-main" onclick="toggleMainStatus()">⭐ Añadir a Mains</button>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 0.2rem;">
+                            <span id="modTier" class="ssbu-modal-tier">Tier</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="ssbu-close" onclick="closeFighterCard()">&times;</button>
+            </div>
+            
+            <div class="ssbu-tabs-container">
+                <div class="ssbu-tabs">
+                    <button class="ssbu-tab-btn active" onclick="switchTab('tabMatchups')">Matchups & Notas</button>
+                    <button class="ssbu-tab-btn" onclick="switchTab('tabData')">Data & Tech</button>
+                    <button class="ssbu-tab-btn" onclick="switchTab('tabNeutral')">Neutral & Stats</button>
+                </div>
+            </div>
+
+            <div id="tabMatchups" class="ssbu-tab-content active">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.2rem;">
+                    <div class="ssbu-data-block">
+                        <div class="ssbu-data-title t-green">🟢 Ventaja contra</div>
+                        <div id="modBest" class="ssbu-tags"></div>
+                    </div>
+                    <div class="ssbu-data-block">
+                        <div class="ssbu-data-title t-red">🔴 Sufre contra</div>
+                        <div id="modWorst" class="ssbu-tags"></div>
+                    </div>
+                </div>
+                <div class="ssbu-data-block" style="border-color: rgba(16, 185, 129, 0.3);">
+                    <div class="ssbu-data-title t-green">📝 Bloc de Notas de Torneo (Local)</div>
+                    <textarea id="charNotes" class="ssbu-notes-area" placeholder="Anota aquí los hábitos de tu rival o estrategias de escenario..."></textarea>
+                    <div style="text-align: right; font-size: 0.75rem; color: var(--green); margin-top: 0.4rem; opacity: 0;" id="saveIndicator">✓ Guardado</div>
+                </div>
+            </div>
+
+            <div id="tabData" class="ssbu-tab-content">
+                <div class="ssbu-data-block">
+                    <div class="ssbu-data-title t-purple">🛡️ Opciones OoS & Seguridad</div>
+                    <div id="modOos" class="ssbu-stat-line"></div>
+                    <div id="modSafe" class="ssbu-stat-line" style="color: var(--accent-main);"></div>
+                </div>
+                <div class="ssbu-data-block">
+                    <div class="ssbu-data-title t-yellow">🎮 Execution & B&B</div>
+                    <div id="modBnb" class="ssbu-stat-line"></div>
+                    <div id="modTech" class="ssbu-stat-line" style="color: var(--yellow);"></div>
+                </div>
+            </div>
+
+            <div id="tabNeutral" class="ssbu-tab-content">
+                <div class="ssbu-data-block" style="border-color: rgba(129, 140, 248, 0.3);">
+                    <div class="ssbu-data-title t-blue">🧠 Plan de Neutral y Gimmicks</div>
+                    <div id="modNeutral" class="ssbu-stat-line"></div>
+                    <div id="modGimmick" class="ssbu-stat-line" style="margin-top:0.8rem;"></div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.2rem;">
+                    <div class="ssbu-data-block">
+                        <div class="ssbu-data-title t-red">📊 Peso y Supervivencia</div>
+                        <div id="modWeight" class="ssbu-stat-line"></div>
+                    </div>
+                    <div class="ssbu-data-block">
+                        <div class="ssbu-data-title t-green">🔥 Kill Confirms</div>
+                        <div id="modKc" class="ssbu-stat-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // PWA Setup Básico Inyectado
+        const manifestData = {
+            "name": "SSBU Pro Analytics", "short_name": "SSBU Pro", "start_url": ".", "display": "standalone",
+            "background_color": "#060913", "theme_color": "#0f172a",
+            "icons": [{ "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230f172a'/%3E%3Ccircle cx='50' cy='50' r='30' fill='none' stroke='%2338bdf8' stroke-width='8'/%3E%3Cpath d='M46 20v60M20 46h60' stroke='%2338bdf8' stroke-width='8'/%3E%3C/svg%3E", "sizes": "512x512", "type": "image/svg+xml" }]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});
+        document.getElementById('manifest-link').href = URL.createObjectURL(manifestBlob);
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `self.addEventListener('install', (e) => { self.skipWaiting(); }); self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); }); self.addEventListener('fetch', (e) => { });`;
+                const blob = new Blob([swCode], {type: 'application/javascript'});
+                const swUrl = URL.createObjectURL(blob);
+                navigator.serviceWorker.register(swUrl).catch(err => console.log('SW skipped'));
+            });
+        }
+
+        // Sistema de Respaldo Exportar/Importar
+        function exportData() {
+            const dataToExport = { mains: JSON.parse(localStorage.getItem('ssbu_mains')) || [], notes: {} };
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('ssbu_notes_')) dataToExport.notes[key] = localStorage.getItem(key);
+            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToExport));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "SSBU_Pro_Backup.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if(data.mains) localStorage.setItem('ssbu_mains', JSON.stringify(data.mains));
+                    if(data.notes) {
+                        for (const key in data.notes) localStorage.setItem(key, data.notes[key]);
+                    }
+                    myMains = data.mains || [];
+                    renderMainsFilter();
+                    renderGrid();
+                    alert("🔄 Datos importados correctamente.");
+                } catch (err) { alert("❌ Archivo no válido."); }
+            };
+            reader.readAsText(file);
+        }
+
+        // Datos y Helpers
+        function getWeight(name) {
+            const w = {"Pikachu": "79 (Ligero) - Muere al ~85%", "Cloud": "100 (Medio) - Supervivencia estándar, muere al ~110%", "Joker": "93 (Medio-Ligero) - Muere al ~100%", "Mr. Game & Watch": "75 (Muy Ligero) - Flotante, muere al ~75%", "Palutena": "91 (Medio-Ligero) - Muere al ~100%", "Pyra / Mythra": "Pyra 98 / Mythra 92 (Medio)", "Bowser": "135 (Super Pesado)", "Donkey Kong": "127 (Pesado)", "Pichu": "62 (El más ligero)", "Fox": "77 (Ligero)"};
+            return w[name] || "Peso Promedio (~95) - Muere alrededor del ~110% en centro de stage.";
+        }
+        function getKillConfirms(name) {
+            const kc = {"Pikachu": "Nair -> Down-Smash (~80%). Drag-Down Up-Air -> Down-Smash.", "Joker": "Fair 1 -> Drag-Down Up-Air -> Down/Up-Smash.", "Cloud": "Limit Cross Slash (~80%). Spaced Bair (~110%).", "Mr. Game & Watch": "Down-Smash (entierro) -> Forward-Smash.", "Palutena": "D-Throw -> Bair (~90%). Nair -> Bair.", "Pyra / Mythra": "Mythra D-Tilt -> Up-Smash. Pyra D-Air -> Up-Smash.", "Fox": "Nair suave -> Up-Smash (~80%).", "Mario": "Nair -> Up-Smash (~90%)."};
+            return kc[name] || "Aéreos suaves o agarres a Smash cerca del borde (aprox. ~110%).";
+        }
+        function getNeutralPlan(name) {
+            const p = {"Pikachu": "Spam de T-Jolt para forzar al rival a protegerse o saltar, y castigar con Quick Attack.", "Joker": "Espaciar Bair con Slingshots. Jugar pasivo-agresivo hasta obtener Arsène.", "Cloud": "Crear un muro impenetrable de Bair y Fair bien espaciados. Cargar límite fuerza al rival a acercarse.", "Mr. Game & Watch": "Bait puro. Finge errores para que el rival golpee tu escudo y castígalo con Fire! (Up-B).", "Palutena": "Usa Autoreticle a distancia. Si se acercan, abusa de tu Nair invencible frontalmente.", "Pyra / Mythra": "Gana el centro con Mythra y Slingshots. Cambia a Pyra solo para matar."};
+            return p[name] || "Aprovecha la movilidad base, no regales saltos y castiga el escudo con opciones seguras.";
+        }
+        function getGimmicks(name) {
+            const g = {"Wario": "Mitad Waft = 55s. Full Waft = 1:50m.", "Cloud": "Límite dura 15s.", "Joker": "Arsène dura ~30s.", "Mr. Game & Watch": "Bucket requiere 3 proyectiles.", "Steve": "Diamante requiere 14 de hierro/oro.", "Terry": "GO! se activa al 100%.", "Lucario": "Aura escala hasta 190%."};
+            return g[name] || "Sin mecánicas de carga críticas.";
+        }
+        function getSafeMoves(name) {
+            const s = {"Cloud": "Bair (-3), Fair (-4).", "Joker": "Bair (-4), Fair 1.", "Pikachu": "Nair (-3), Bair (-4).", "Pyra / Mythra": "Mythra Nair (-5), Pyra Dair (-5).", "Fox": "Nair (-3), Bair (-4).", "Mario": "Bair (-2), Up-Air (-2).", "Sheik": "Fair (-2), Bair (-3).", "Wolf": "Fair (-3), Bair (-4).", "Lucina": "Fair (-4).", "Mr. Game & Watch": "Bair (-4), Up-B (Frame 3 invencible)."};
+            return s[name] || "Consulta UFD para aéreos -2 o -3; espaciar con Slingshot es clave.";
+        }
+        function getBnbAndTech(name) {
+            const b = {"Pikachu": { bnb: "Nair loops, Drag-Down Up-Air.", tech: "Asigna salto a ZL/ZR para Slingshots." }, "Joker": { bnb: "First-hit Fair -> Drag-Down Up-Air.", tech: "Usa ZL/ZR para facilitar drag-downs." }, "Cloud": { bnb: "Cross-slash baits, Bair chaining.", tech: "Saltos en ZL/ZR para optimizar presión." }, "Pyra / Mythra": { bnb: "Mythra D-Tilt -> U-Tilt.", tech: "Attack Cancel Bair y saltos en ZL/ZR." }, "Mr. Game & Watch": { bnb: "D-Throw -> Nair -> Up-Air.", tech: "Configura ZL/ZR para soltar escudo rápido." }, "Palutena": { bnb: "D-Throw -> Nair (x2) -> Fair.", tech: "Teleport Cancel y Slingshot Bair." }};
+            return b[name] || { bnb: "Combos de agarre básicos y secuencias de Nair.", tech: "Domina el espaciado y Slingshot con salto en ZL/ZR." };
+        }
+        function getStagePref(arch) {
+            arch = arch.toLowerCase();
+            if (arch.includes("zoner") || arch.includes("trapper")) return { pick: "Destino Final, Town & City", ban: "Battlefield" };
+            if (arch.includes("combo") || arch.includes("brawler") || arch.includes("rushdown")) return { pick: "Battlefield, Small Battlefield", ban: "Destino Final" };
+            if (arch.includes("swordfighter")) return { pick: "Town & City, Small Battlefield", ban: "Yoshi's Story" };
+            if (arch.includes("heavyweight")) return { pick: "Small Battlefield, Smashville", ban: "Destino Final" };
+            return { pick: "Small Battlefield, Pokémon Stadium 2", ban: "Destino Final" };
+        }
+
+        const tierWeights = { "S+": 1, "S-": 2, "A+": 3, "A": 4, "A-": 5, "B+": 6, "B-": 7, "C+": 8, "C-": 9, "D+": 10, "D-": 11, "E": 12 };
+        
+        const db = [
+            { name: "Mario", arch: "Brawler / Combo", tier: "A", oos: "Super Jump Punch (Frame 3) y Nair.", best: ["Fox", "Falcon", "Heavyweights"], worst: ["Min Min", "Lucina", "Swordfighters"] },
+            { name: "Donkey Kong", arch: "Heavyweight / Grappler", tier: "B+", oos: "Deficiente.", best: ["Little Mac", "Dr. Mario"], worst: ["Pikachu", "Joker", "Min Min"] },
+            { name: "Link", arch: "Zoner / Swordfighter", tier: "C-", oos: "Spin Attack (Frame 6).", best: ["Heavyweights"], worst: ["Pikachu", "Fox", "Min Min"] },
+            { name: "Samus", arch: "Zoner", tier: "A+", oos: "Screw Attack (Frame 6).", best: ["Heavyweights", "K. Rool"], worst: ["Fox", "Pikachu", "Min Min"] },
+            { name: "Dark Samus", arch: "Zoner", tier: "A+", oos: "Screw Attack (Frame 6).", best: ["Heavyweights"], worst: ["Fox", "Pikachu", "Min Min"] },
+            { name: "Yoshi", arch: "Brawler / Rushdown", tier: "S-", oos: "Nair (Frame 6).", best: ["Little Mac", "Dr. Mario"], worst: ["Lucina", "Cloud", "Min Min"] },
+            { name: "Kirby", arch: "Brawler", tier: "C-", oos: "Up-B lento.", best: ["Little Mac", "Ganondorf"], worst: ["Min Min", "Palutena", "Cloud"] },
+            { name: "Fox", arch: "Rushdown", tier: "S-", oos: "Up-Smash (Frame 8).", best: ["Heavyweights", "Ridley"], worst: ["Pikachu", "Min Min", "ROB"] },
+            { name: "Pikachu", arch: "Rushdown / Combo", tier: "A+", oos: "Up-Smash, Nair rápido.", best: ["Heavyweights", "Fox"], worst: ["Ness", "Mr. Game & Watch", "Steve"] },
+            { name: "Luigi", arch: "Grappler", tier: "S-", oos: "Up-B (Frame 1 OoS - Letal).", best: ["Fast-fallers", "Falcon"], worst: ["Swordfighters", "Min Min"] },
+            { name: "Ness", arch: "Zoner / Combo", tier: "B-", oos: "Nair y PK Thunder.", best: ["Pikachu", "Mega Man"], worst: ["Lucina", "Cloud", "Min Min"] },
+            { name: "Captain Falcon", arch: "Rushdown", tier: "A-", oos: "Up-Smash y Nair.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Joker"] },
+            { name: "Jigglypuff", arch: "Bait & Punish / Aerial", tier: "C-", oos: "Rest situacional.", best: ["Heavyweights"], worst: ["Min Min", "Cloud", "Lucina"] },
+            { name: "Peach", arch: "Combo / Technical", tier: "S-", oos: "Turnip pull, Toad.", best: ["Heavyweights"], worst: ["Min Min", "Cloud", "Pikachu"] },
+            { name: "Daisy", arch: "Combo / Technical", tier: "S-", oos: "Turnip pull, Toad.", best: ["Heavyweights"], worst: ["Min Min", "Cloud", "Pikachu"] },
+            { name: "Bowser", arch: "Heavyweight / Grappler", tier: "C-", oos: "Whirling Fortress (Up-B, Frame 6).", best: ["Pikachu", "Pichu"], worst: ["Min Min", "Joker", "Palutena"] },
+            { name: "Ice Climbers", arch: "Combo / Technical", tier: "B+", oos: "Up-Smash y desyncs.", best: ["Heavyweights"], worst: ["Min Min", "Palutena"] },
+            { name: "Sheik", arch: "Rushdown / Combo", tier: "B-", oos: "Nair y Bouncing Fish.", best: ["Fast-fallers"], worst: ["Heavyweights", "Min Min", "Steve"] },
+            { name: "Zelda", arch: "Trapper / Zoner", tier: "D+", oos: "Nayru's Love.", best: ["Heavyweights"], worst: ["Pikachu", "Sonic", "Fox"] },
+            { name: "Dr. Mario", arch: "Brawler", tier: "D-", oos: "Up-B rápido (Frame 3).", best: ["Heavyweights", "Mac"], worst: ["Swordfighters", "Min Min"] },
+            { name: "Pichu", arch: "Rushdown / Glass Cannon", tier: "B-", oos: "Nair y Up-Smash.", best: ["Heavyweights"], worst: ["Ness", "G&W", "Min Min"] },
+            { name: "Falco", arch: "Combo / Bait & Punish", tier: "A-", oos: "Up-Smash.", best: ["Fast-fallers"], worst: ["Min Min", "Palutena", "Pikachu"] },
+            { name: "Marth", arch: "Swordfighter", tier: "D-", oos: "Dolphin Slash.", best: ["Heavyweights"], worst: ["Min Min", "Pikachu", "Sonic"] },
+            { name: "Lucina", arch: "Swordfighter", tier: "B+", oos: "Dolphin Slash (Frame 5).", best: ["Heavyweights", "Mario"], worst: ["Min Min", "Pikachu", "Joker"] },
+            { name: "Young Link", arch: "Zoner / Rushdown", tier: "B+", oos: "Spin Attack.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Wolf"] },
+            { name: "Ganondorf", arch: "Heavyweight", tier: "E", oos: "Up-Smash lento.", best: ["Little Mac"], worst: ["Pikachu", "Joker", "Min Min", "Steve"] },
+            { name: "Mewtwo", arch: "Glass Cannon / Zoner", tier: "D+", oos: "Up-Smash.", best: ["Heavyweights"], worst: ["Pikachu", "Fox", "Wolf"] },
+            { name: "Roy", arch: "Rushdown / Swordfighter", tier: "A", oos: "Blazer (Frame 6).", best: ["Zoners lentos"], worst: ["Min Min", "Pikachu", "Cloud"] },
+            { name: "Chrom", arch: "Rushdown / Swordfighter", tier: "C-", oos: "Soaring Slash.", best: ["Zoners lentos"], worst: ["Min Min", "Joker", "Steve"] },
+            { name: "Mr. Game & Watch", arch: "Bait & Punish / Anti-Meta", tier: "S+", oos: "Fire! (Frame 3 invencible).", best: ["Pikachu", "Joker"], worst: ["Min Min", "Palutena"] },
+            { name: "Meta Knight", arch: "Bait & Punish / Aerial", tier: "B-", oos: "Up-Smash.", best: ["Heavyweights"], worst: ["Min Min", "Cloud", "Palutena"] },
+            { name: "Pit", arch: "All-Rounder", tier: "B+", oos: "Nair.", best: ["Heavyweights"], worst: ["Min Min", "Palutena", "Pikachu"] },
+            { name: "Dark Pit", arch: "All-Rounder", tier: "B+", oos: "Nair.", best: ["Heavyweights"], worst: ["Min Min", "Palutena", "Pikachu"] },
+            { name: "Zero Suit Samus", arch: "Bait & Punish", tier: "B+", oos: "Boost Kick.", best: ["Heavyweights", "Steve"], worst: ["Pikachu", "Joker", "Min Min"] },
+            { name: "Wario", arch: "Bait & Punish", tier: "A+", oos: "Wario Bike.", best: ["Heavyweights"], worst: ["Cloud", "Min Min", "Sonic"] },
+            { name: "Snake", arch: "Zoner / Trapper", tier: "S+", oos: "Granada (Frame 1).", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Fox"] },
+            { name: "Ike", arch: "Swordfighter", tier: "D-", oos: "Aether.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Sonic"] },
+            { name: "Pokémon Trainer", arch: "Stance / Versatile", tier: "B+", oos: "Variable.", best: ["Fast-fallers"], worst: ["Swordfighters largos"] },
+            { name: "Diddy Kong", arch: "Trapper / Rushdown", tier: "S-", oos: "Monkey Flip.", best: ["Heavyweights"], worst: ["Pikachu", "Pac-Man", "Min Min"] },
+            { name: "Lucas", arch: "Trapper / Zoner", tier: "C+", oos: "Up-Smash.", best: ["Heavyweights"], worst: ["Pikachu", "Cloud", "Min Min"] },
+            { name: "Sonic", arch: "Bait & Punish", tier: "S+", oos: "Spin Dash.", best: ["Heavyweights", "Mac"], worst: ["Min Min", "Steve", "Pikachu"] },
+            { name: "King Dedede", arch: "Heavyweight / Trapper", tier: "D-", oos: "Up-Smash lento.", best: ["Little Mac"], worst: ["Min Min", "Pikachu", "Joker"] },
+            { name: "Olimar", arch: "Zoner", tier: "A+", oos: "Up-Smash rápido.", best: ["Heavyweights"], worst: ["Min Min", "Cloud", "Wolf"] },
+            { name: "Lucario", arch: "Bait & Punish", tier: "C-", oos: "Force Palm.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Fox"] },
+            { name: "R.O.B.", arch: "All-Rounder / Zoner", tier: "S+", oos: "Nair y Up-Smash.", best: ["Heavyweights"], worst: ["Pikachu", "Joker", "Min Min"] },
+            { name: "Toon Link", arch: "Zoner", tier: "B+", oos: "Up-B rápido.", best: ["Heavyweights"], worst: ["Min Min", "Pikachu", "Wolf"] },
+            { name: "Wolf", arch: "All-Rounder / Zoner", tier: "A", oos: "Up-Smash.", best: ["Heavyweights"], worst: ["Pikachu", "Joker", "Min Min"] },
+            { name: "Villager", arch: "Zoner / Trapper", tier: "D-", oos: "Pocket.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Cloud"] },
+            { name: "Mega Man", arch: "Zoner", tier: "A", oos: "Leaf Shield.", best: ["Pesados"], worst: ["Pikachu", "Fox", "Min Min"] },
+            { name: "Wii Fit Trainer", arch: "Trapper / Brawler", tier: "C+", oos: "Up-Smash.", best: ["Heavyweights"], worst: ["Min Min", "Pikachu"] },
+            { name: "Rosalina & Luma", arch: "Trapper", tier: "B+", oos: "Up-Smash.", best: ["Zoners", "Ness"], worst: ["Min Min", "Pikachu", "Cloud"] },
+            { name: "Little Mac", arch: "Rushdown (Ground)", tier: "E", oos: "Pésimo escudo.", best: ["Ganondorf"], worst: ["Todo el top tier"] },
+            { name: "Greninja", arch: "Bait & Punish", tier: "A-", oos: "Up-Smash.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Sonic"] },
+            { name: "Mii Brawler", arch: "Brawler / Combo", tier: "A", oos: "Up-B custom.", best: ["Heavyweights"], worst: ["Swordies", "Min Min"] },
+            { name: "Mii Gunner", arch: "Zoner", tier: "C+", oos: "Nair.", best: ["Heavyweights"], worst: ["Min Min", "Fox", "Pikachu"] },
+            { name: "Mii Swordfighter", arch: "Swordfighter / Zoner", tier: "D+", oos: "Up-Smash.", best: ["Heavyweights"], worst: ["Min Min", "Joker"] },
+            { name: "Palutena", arch: "All-Rounder", tier: "A+", oos: "Nair y Up-Smash.", best: ["Brawlers", "Mac"], worst: ["Pikachu", "Min Min", "Fox"] },
+            { name: "Pac-Man", arch: "Trapper", tier: "B+", oos: "Hydrant.", best: ["Heavyweights"], worst: ["Min Min", "Pikachu", "Cloud"] },
+            { name: "Robin", arch: "Zoner", tier: "C+", oos: "Nosferatu.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min", "Wolf"] },
+            { name: "Shulk", arch: "Swordfighter / Stance", tier: "A-", oos: "Monado Arts.", best: ["Zoners"], worst: ["Pikachu", "Min Min", "Snake"] },
+            { name: "Bowser Jr.", arch: "Trapper", tier: "C-", oos: "Mechakoopa.", best: ["Heavyweights"], worst: ["Pikachu", "Min Min"] },
+            { name: "Duck Hunt", arch: "Zoner", tier: "B-", oos: "Trick Shot.", best: ["Pesados"], worst: ["Pikachu", "Min Min", "Fox"] },
+            { name: "Ryu", arch: "Combo / FGC", tier: "A", oos: "Shoryuken (Frame 6).", best: ["Heavyweights"], worst: ["Min Min", "Pikachu", "Sonic"] },
+            { name: "Ken", arch: "Combo / FGC", tier: "B+", oos: "Shoryuken de fuego.", best: ["Heavyweights"], worst: ["Min Min", "Pikachu", "Sonic"] },
+            { name: "Cloud", arch: "Swordfighter", tier: "A", oos: "Climhazzard.", best: ["Heavyweights"], worst: ["Min Min", "Joker", "Pyra / Mythra"] },
+            { name: "Corrin", arch: "Swordfighter", tier: "A-", oos: "Pincho.", best: ["Heavyweights"], worst: ["Min Min", "Pikachu", "Sonic"] },
+            { name: "Bayonetta", arch: "Combo / Bait & Punish", tier: "A", oos: "Witch Time.", best: ["Pesados"], worst: ["Pikachu", "Min Min", "Joker"] },
+            { name: "Inkling", arch: "Rushdown / Bait", tier: "B-", oos: "Roller.", best: ["Pesados"], worst: ["Pikachu", "Min Min", "Lucina"] },
+            { name: "Ridley", arch: "Heavyweight", tier: "C+", oos: "Nair.", best: ["Mac", "Ganondorf"], worst: ["Pikachu", "Min Min", "Joker"] },
+            { name: "Simon", arch: "Zoner", tier: "E", oos: "Up-B rápido.", best: ["Pesados"], worst: ["Pikachu", "Min Min", "Sonic"] },
+            { name: "Richter", arch: "Zoner", tier: "E", oos: "Up-B rápido.", best: ["Pesados"], worst: ["Pikachu", "Min Min", "Sonic"] },
+            { name: "King K. Rool", arch: "Heavyweight / Zoner", tier: "D-", oos: "Nair armor.", best: ["Mac"], worst: ["Pikachu", "Min Min", "Sonic"] },
+            { name: "Isabelle", arch: "Trapper", tier: "C+", oos: "Fishing Rod.", best: ["Pesados"], worst: ["Pikachu", "Min Min", "Cloud"] },
+            { name: "Incineroar", arch: "Heavyweight / Grappler", tier: "C-", oos: "Revenge.", best: ["Pesados"], worst: ["Min Min", "Pikachu", "Sonic"] },
+            { name: "Piranha Plant", arch: "Trapper", tier: "C-", oos: "Ptooie.", best: ["Mac"], worst: ["Pikachu", "Min Min", "Sonic"] },
+            { name: "Joker", arch: "Rushdown / All-Rounder", tier: "S-", oos: "Rebels Guard.", best: ["Heavyweights"], worst: ["Pikachu", "Sonic", "G&W"] },
+            { name: "Hero", arch: "Zoner / RNG", tier: "A", oos: "Nair mágico.", best: ["Zoners lentos"], worst: ["Pikachu", "Min Min"] },
+            { name: "Banjo & Kazooie", arch: "Brawler", tier: "C-", oos: "Wonderwing.", best: ["Pesados"], worst: ["Min Min", "Pikachu", "Wolf"] },
+            { name: "Terry", arch: "Combo / FGC", tier: "B+", oos: "Power Dunk.", best: ["Heavyweights"], worst: ["Min Min", "Pikachu"] },
+            { name: "Byleth", arch: "Swordfighter / Zoner", tier: "B-", oos: "Nair asombroso.", best: ["Pesados", "Mac"], worst: ["Min Min", "Pikachu", "Joker"] },
+            { name: "Min Min", arch: "Zoner Extremo", tier: "S+", oos: "Nair, Up-Smash.", best: ["Swordfighters", "Mac"], worst: ["Pikachu", "Joker", "ZSS"] },
+            { name: "Steve", arch: "Trapper / Constructor", tier: "S+", oos: "Minecart.", best: ["Mac", "Pesados"], worst: ["Min Min", "Cloud", "Sephiroth"] },
+            { name: "Sephiroth", arch: "Swordfighter / Zoner", tier: "B-", oos: "Nair.", best: ["Pesados"], worst: ["Pikachu", "Min Min"] },
+            { name: "Pyra / Mythra", arch: "Swordfighter", tier: "S-", oos: "Foresight.", best: ["Zoners"], worst: ["Min Min", "Diddy Kong"] },
+            { name: "Kazuya", arch: "Combo / FGC", tier: "S+", oos: "EWGF.", best: ["Pesados"], worst: ["Min Min", "Sonic", "Pikachu"] },
+            { name: "Sora", arch: "Aerial / Combo", tier: "A", oos: "Up-B.", best: ["Heavies"], worst: ["Min Min", "Pikachu", "Cloud"] }
+        ];
+
+        const tierColors = { "S": "var(--tier-s)", "A": "var(--tier-a)", "B": "var(--tier-b)", "C": "var(--tier-c)", "D": "var(--tier-d)", "E": "var(--tier-e)" };
+
+        const selA = document.getElementById("fighterA"); const selB = document.getElementById("fighterB");
+        db.sort((a,b) => a.name.localeCompare(b.name)).forEach(f => {
+            selA.add(new Option(f.name, f.name)); selB.add(new Option(f.name, f.name));
+        });
+
+        function getAvatarInitials(name) { return name.substring(0,2).toUpperCase(); }
+
+        // LISTA VACÍA POR DEFECTO HASTA QUE EL USUARIO AGREGUE SUS MAINS
+        let myMains = JSON.parse(localStorage.getItem('ssbu_mains')) || [];
+        let activeMainFilter = "";
+
+        function renderMainsFilter() {
+            const container = document.getElementById("mainsContainer");
+            container.innerHTML = `<span style="font-size: 0.85rem; font-weight: 700; color: var(--text-body); margin-right: 0.5rem;">⚡ Mis Mains:</span>`;
+            
+            if (myMains.length === 0) {
+                container.innerHTML += `<span style="font-size: 0.8rem; font-style: italic; color: var(--text-body);">Aún no tienes mains guardados. Abre un personaje y toca "⭐ Añadir a Mains".</span>`;
+            } else {
+                myMains.forEach(main => {
+                    const btn = document.createElement("button");
+                    btn.className = `ssbu-main-btn ${activeMainFilter === main ? 'active' : ''}`;
+                    btn.onclick = () => filterByMain(main);
+                    btn.innerHTML = `⭐ ${main}`;
+                    container.appendChild(btn);
+                });
+            }
+
+            const showAllBtn = document.createElement("button");
+            showAllBtn.className = `ssbu-main-btn ${activeMainFilter === "" ? 'active' : ''}`;
+            showAllBtn.style.background = "transparent"; showAllBtn.style.borderColor = "transparent";
+            showAllBtn.onclick = () => filterByMain('');
+            showAllBtn.innerHTML = `🧹 Todos`;
+            container.appendChild(showAllBtn);
+        }
+
+        function filterByMain(mainName) {
+            activeMainFilter = mainName;
+            document.getElementById("searchInput").value = "";
+            renderMainsFilter();
+            renderGrid();
+        }
+
+        function toggleMainStatus() {
+            if(!currentModalFighter) return;
+            const idx = myMains.indexOf(currentModalFighter);
+            const btn = document.getElementById("btnToggleMain");
+
+            if(idx > -1) {
+                myMains.splice(idx, 1);
+                btn.classList.remove('is-main'); btn.innerHTML = "☆ Añadir a Mains";
+            } else {
+                myMains.push(currentModalFighter);
+                btn.classList.add('is-main'); btn.innerHTML = "⭐ Quitar de Mains";
+            }
+            localStorage.setItem('ssbu_mains', JSON.stringify(myMains));
+            renderMainsFilter();
+            renderGrid();
+        }
+
+        // Lógica VS
+        function generateGameplan(player, opponent) {
+            let plan = `<div style="margin-bottom:0.75rem;"><strong style="color:var(--text-title);">${player.name}:</strong> `;
+            let pArch = player.arch.toLowerCase(); let oArch = opponent.arch.toLowerCase();
+
+            if (pArch.includes("zoner") || pArch.includes("trapper")) {
+                plan += `Juega al desgaste. Mantén a ${opponent.name} a raya y dicta el ritmo. Usa tu ${player.oos.split('.')[0]} OoS si se acerca demasiado. `;
+            } else if (pArch.includes("rushdown") || pArch.includes("combo")) {
+                if (oArch.includes("zoner") || oArch.includes("trapper")) plan += `Paciencia. Camina y usa parries para romper su muro defensivo. Cero saltos predecibles. `;
+                else plan += `Presión constante. Capitaliza sus errores y llévalo rápido al ledge. `;
+            } else if (pArch.includes("swordfighter")) {
+                plan += `Usa la punta de tu espada (espaciado perfecto) para crear un muro impenetrable y evitar castigos OoS de ${opponent.name}. `;
+            } else if (pArch.includes("heavyweight")) {
+                plan += `Paciencia extrema. Sobrevive el daño inicial y usa tu fuerza bruta para robar el stock con una sola buena lectura. `;
+            } else {
+                plan += `Adapta tu juego a los hábitos de ${opponent.name}. Castiga sus opciones repetitivas. `;
+            }
+            plan += `</div>`;
+            return plan;
+        }
+
+        function analyzeMatchup() {
+            const vBox = document.getElementById("verdictBox");
+            const vHeader = document.getElementById("verdictHeader");
+            const vText = document.getElementById("verdictText");
+            const nA = selA.value; const nB = selB.value;
+            
+            if(!nA || !nB) return;
+            if(nA === nB) {
+                vBox.style.borderColor = "var(--even)"; vHeader.style.color = "var(--even)";
+                vHeader.textContent = "🤝 Espejo (50-50 Igualado)";
+                vText.innerHTML = `<strong>Razón Técnica:</strong> Duelo de fundamentos. Gana quien mejor lea los hábitos y opciones defensivas del otro.`;
+                return;
+            }
+
+            const pA = db.find(f => f.name === nA); const pB = db.find(f => f.name === nB);
+            let aWins = pA.best.some(m => pB.name.includes(m) || pB.arch.includes(m)) || pB.worst.some(m => pA.name.includes(m) || pA.arch.includes(m));
+            let bWins = pB.best.some(m => pA.name.includes(m) || pA.arch.includes(m)) || pB.worst.some(m => pB.name.includes(m) || pB.arch.includes(m));
+
+            if ((aWins && bWins) || (!aWins && !bWins)) {
+                const tiers = {"S+":12, "S-":11, "A+":10, "A":9, "A-":8, "B+":7, "B-":6, "C+":5, "C-":4, "D+":3, "D-":2, "E":1};
+                if(tiers[pA.tier] > tiers[pB.tier] + 2) { aWins = true; bWins = false; }
+                else if(tiers[pB.tier] > tiers[pA.tier] + 2) { bWins = true; aWins = false; }
+            }
+
+            let verdictHtml = "";
+            if(aWins && !bWins) {
+                vBox.style.borderColor = "var(--win)"; vHeader.style.color = "var(--win)";
+                vHeader.textContent = `🟢 Ventaja Positiva: ${pA.name}`;
+                verdictHtml = `<strong>Razón Técnica:</strong> ${pA.name} anula el plan de juego de ${pB.name} y castiga sus aproximaciones con facilidad.`;
+            } else if(bWins && !aWins) {
+                vBox.style.borderColor = "var(--loss)"; vHeader.style.color = "var(--loss)";
+                vHeader.textContent = `🔴 Ventaja Positiva: ${pB.name}`;
+                verdictHtml = `<strong>Razón Técnica:</strong> El kit de ${pB.name} contrarresta duramente a ${pA.name}, forzando riesgos excesivos.`;
+            } else {
+                vBox.style.borderColor = "var(--even)"; vHeader.style.color = "var(--even)";
+                vHeader.textContent = `⚖️ Matchup Igualado (Even)`;
+                verdictHtml = `<strong>Razón Técnica:</strong> Parejo. Depende totalmente de quién gestione mejor el neutral y la presión OoS.`;
+            }
+
+            const stageA = getStagePref(pA.arch); const stageB = getStagePref(pB.arch);
+            const stages = ["Battlefield", "Final Destination", "Smashville", "Town & City", "Pokémon Stadium 2", "Lylat Cruise", "Kalos Pokémon League", "Small Battlefield"];
+            let stagesHtml = `<div class="stage-striker">`;
+            stages.forEach(s => { stagesHtml += `<button class="stage-btn" onclick="this.classList.toggle('banned')">${s}</button>`; });
+            stagesHtml += `</div>`;
+
+            verdictHtml += `
+                <div class="ssbu-gameplan-box">
+                    <div class="ssbu-gameplan-title">🎮 Planes Estratégicos</div>
+                    ${generateGameplan(pA, pB)}
+                    ${generateGameplan(pB, pA)}
+                    <div class="ssbu-gameplan-title" style="margin-top:0.5rem; color:var(--yellow);">🗺️ Stage Striker (Toca para Banear)</div>
+                    <div style="font-size:0.85rem; color:var(--text-body); margin-bottom: 0.5rem;">
+                        <strong>Si juegas ${pA.name}:</strong> Prioriza <em>${stageA.pick}</em>. Banea <em>${stageA.ban}</em>.<br>
+                        <strong>Si juegas ${pB.name}:</strong> Prioriza <em>${stageB.pick}</em>. Banea <em>${stageB.ban}</em>.
+                    </div>
+                    ${stagesHtml}
+                </div>
+            `;
+            vText.innerHTML = verdictHtml;
+        }
+
+        function renderGrid() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const sortMode = document.getElementById("sortSelect").value;
+            const grid = document.getElementById("rosterGrid");
+            grid.innerHTML = "";
+            
+            let filtered = [...db];
+            
+            // Filtrado
+            if(activeMainFilter) {
+                filtered = filtered.filter(f => f.name === activeMainFilter);
+            } else if (query) {
+                filtered = filtered.filter(f => f.name.toLowerCase().includes(query) || f.arch.toLowerCase().includes(query));
+            }
+
+            // Ordenamiento
+            if (sortMode === 'tier') {
+                filtered.sort((a, b) => {
+                    let wA = tierWeights[a.tier] || 99;
+                    let wB = tierWeights[b.tier] || 99;
+                    if(wA !== wB) return wA - wB;
+                    return a.name.localeCompare(b.name);
+                });
+            } else {
+                filtered.sort((a, b) => a.name.localeCompare(b.name));
+            }
+            
+            if(filtered.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-body);">No se encontraron luchadores.</div>`;
+                return;
+            }
+
+            filtered.forEach(f => {
+                const card = document.createElement("div");
+                const isMain = myMains.includes(f.name);
+                card.className = `ssbu-card ${isMain ? 'is-main' : ''}`;
+                card.onclick = () => openModal(f);
+                
+                const baseTier = f.tier.charAt(0);
+                const tColor = tierColors[baseTier] || "var(--text-body)";
+                
+                card.innerHTML = `
+                    <div class="ssbu-card-star">⭐</div>
+                    <div class="ssbu-avatar" style="background: linear-gradient(135deg, ${tColor}, var(--bg-panel)); border: 1px solid ${tColor};">${getAvatarInitials(f.name)}</div>
+                    <div class="ssbu-card-info">
+                        <div class="ssbu-card-name">${f.name}</div>
+                        <div class="ssbu-card-arch" style="color:${tColor};">Tier ${f.tier}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        let currentModalFighter = null;
+
+        function closeFighterCard() {
+            document.getElementById("fighterModal").classList.remove("active");
+            document.body.classList.remove('modal-open');
+            currentModalFighter = null;
+        }
+
+        function closeOverlay(e) {
+            if(e.target.id === 'fighterModal') closeFighterCard();
+        }
+
+        function openModal(fighter) {
+            currentModalFighter = fighter.name;
+            document.getElementById("modName").textContent = fighter.name;
+            
+            const btn = document.getElementById("btnToggleMain");
+            if(myMains.includes(fighter.name)) {
+                btn.classList.add('is-main'); btn.innerHTML = "⭐ Quitar de Mains";
+            } else {
+                btn.classList.remove('is-main'); btn.innerHTML = "☆ Añadir a Mains";
+            }
+
+            const baseTier = fighter.tier.charAt(0);
+            const tColor = tierColors[baseTier] || "var(--text-body)";
+            
+            const tBadge = document.getElementById("modTier");
+            tBadge.textContent = `Tier Oficial: ${fighter.tier}`;
+            tBadge.style.background = tColor;
+
+            const avatar = document.getElementById("modAvatar");
+            avatar.textContent = getAvatarInitials(fighter.name);
+            avatar.style.background = `linear-gradient(135deg, ${tColor}, var(--bg-panel))`;
+            avatar.style.borderColor = tColor;
+
+            document.getElementById("modBest").innerHTML = fighter.best.map(t => `<span class="ssbu-tag" style="color:var(--green); border-color:var(--green);">${t}</span>`).join('');
+            document.getElementById("modWorst").innerHTML = fighter.worst.map(t => `<span class="ssbu-tag" style="color:var(--red); border-color:var(--red);">${t}</span>`).join('');
+            
+            document.getElementById("modWeight").innerHTML = `<strong>Peso y Supervivencia:</strong> ${getWeight(fighter.name)}`;
+            document.getElementById("modKc").innerHTML = `<strong>Kill Confirms Principales:</strong><br>${getKillConfirms(fighter.name)}`;
+            document.getElementById("modGimmick").innerHTML = `<strong>Timers y Gimmicks:</strong> ${getGimmicks(fighter.name)}`;
+
+            document.getElementById("modOos").innerHTML = `<strong>Mecánica Principal:</strong> ${fighter.oos}`;
+            document.getElementById("modSafe").innerHTML = `<strong>Ataques Seguros en Escudo:</strong><br>${getSafeMoves(fighter.name)}`;
+            
+            const techData = getBnbAndTech(fighter.name);
+            document.getElementById("modBnb").innerHTML = `<strong>Bread & Butter (B&B):</strong><br>${techData.bnb}`;
+            document.getElementById("modTech").innerHTML = `<strong>Ejecución y Botones (Tech):</strong><br>${techData.tech}`;
+
+            const savedNotes = localStorage.getItem(`ssbu_notes_${fighter.name}`) || "";
+            const notesArea = document.getElementById("charNotes");
+            notesArea.value = savedNotes;
+            document.getElementById("saveIndicator").style.opacity = 0;
+
+            document.querySelectorAll('.ssbu-tab-btn')[0].click();
+            document.getElementById("fighterModal").classList.add("active");
+            document.body.classList.add('modal-open');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.ssbu-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.ssbu-tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        document.getElementById("charNotes").addEventListener("input", function(e) {
+            if(currentModalFighter) {
+                localStorage.setItem(`ssbu_notes_${currentModalFighter}`, e.target.value);
+                const ind = document.getElementById("saveIndicator");
+                ind.style.opacity = 1;
+                clearTimeout(window.saveTimeout);
+                window.saveTimeout = setTimeout(() => { ind.style.opacity = 0; }, 2000);
+            }
+        });
+
+        // Inicialización
+        renderMainsFilter();
+        renderGrid();
+    </script>
+</body>
+</html>
